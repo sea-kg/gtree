@@ -189,7 +189,7 @@ include_once("head.php");
                     <select class="form-control" name="bornmonth">
                         <?php 
                             echo '<option value="0">-</option>';
-                            for ($i = 1; $i < 12; $i++) {
+                            for ($i = 1; $i <= 12; $i++) {
                                 echo '<option value="'.$i.'" '.($bornmonth == $i ? 'selected' : '').'>'.$i.'</option>';
                             }
                         ?>
@@ -234,7 +234,7 @@ include_once("head.php");
                     <select class="form-control" name="monthofdeath">
                         <?php 
                             echo '<option value="0">-</option>';
-                            for ($i = 1; $i < 12; $i++) {
+                            for ($i = 1; $i <= 12; $i++) {
                                 echo '<option value="'.$i.'" '.($monthofdeath == $i ? 'selected' : '').'>'.$i.'</option>';
                             }
                         ?>
