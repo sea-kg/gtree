@@ -84,6 +84,16 @@
 
             $title = '';
             $biography = '';
+            $yearsoflife = '';
+            if ($row['bornyear'] > 0) {
+              $yearsoflife = $row['bornyear'];
+              if ($row['yearofdeath']) {
+                $yearsoflife = 'Годы жизни: '.$yearsoflife.' - '.$row['yearofdeath'];
+              } else {
+                $yearsoflife = 'Год рождения: '.$yearsoflife;
+              }
+            }
+
             if ($row['private'] == 'yes') {
               $title = $row['firstname'];
             } else {
@@ -94,7 +104,7 @@
             echo '<br><div class="card">
               <div class="card-body">
                 <h5 class="card-title">#'.$personid.' '.$title.'</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Годы жизни: '.$row['bornyear'].' - '.$row['yearofdeath'].'</h6>
+                <h6 class="card-subtitle mb-2 text-muted">'.$yearsoflife.'</h6>
                 <p class="card-text">'.$mother.'</p>
                 <p class="card-text">'.$father.'</p>
                 '.$biography.'
