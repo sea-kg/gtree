@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./index.css">
 
-    <title>Genealogical Tree</title>
+    <title>Генеалогическое древо</title>
   </head>
   <body>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">Genealogical-Tree</a>
+          <a class="navbar-brand" href="#">Генеологическое древо</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -24,13 +24,10 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item active">
-                <a class="nav-link" href="index.html">Дерево</a>
+                <a class="nav-link" href="persons.php">Дерево</a>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Персоны
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="list_persons"></div>
+              <li class="nav-item active">
+                <a class="nav-link" href="persons.php">Персоны</a>
               </li>
             </ul>
           </div>
