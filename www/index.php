@@ -146,12 +146,57 @@
 
         console.log(y);
       }
+
       ctx.lineWidth = 1;
+      // parents
+      for (var i in gt) {
+        var p = gt[i];
+
+        if (p.mother > 0 && p.father > 0) {
+          var mo = gt[p.mother];
+          var fa = gt[p.father];
+          
+          var mo_x1 = calcX_in_px(mo.bornyear);
+          var mo_y1 = 50 + mo.gtline * gtree_gtline;
+
+          var fa_x1 = calcX_in_px(fa.bornyear);
+          var fa_y1 = 50 + fa.gtline * gtree_gtline;
+
+          var x1 = calcX_in_px(p.bornyear);
+          var y1 = 50 + p.gtline * gtree_gtline;
+
+          mo_x1 += gtree_card_width;
+          mo_y1 += gtree_card_height / 2;
+          fa_x1 += gtree_card_width;
+          fa_y1 += gtree_card_height / 2;
+          y1 += gtree_card_height / 2;
+
+          var x2 = Math.max(mo_x1, fa_x1) + 20;
+          var y2 = (fa_y1 + mo_y1) / 2;
+          var x3 = x2 + 30;
+
+          ctx.beginPath();
+          ctx.moveTo(mo_x1, mo_y1);
+          ctx.lineTo(x2, mo_y1);
+          ctx.lineTo(x2, fa_y1);
+          ctx.lineTo(fa_x1, fa_y1);
+          ctx.stroke();
+          
+          ctx.beginPath();
+          ctx.moveTo(x2, y2);
+          ctx.lineTo(x3, y2);
+          ctx.lineTo(x3, y1);
+          ctx.lineTo(x1, y1);
+          ctx.stroke();
+        }
+      }
+
+      // cards
       for (var i in gt) {
         var p = gt[i];
         console.log(p);
         var x1 = calcX_in_px(p.bornyear);
-        var y1 = 50 + p.gtline * gtree_gtline; // TODO
+        var y1 = 50 + p.gtline * gtree_gtline;
         
         ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
         var d = 16;
@@ -162,8 +207,6 @@
         }
         d += 16;
         ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
-
-        // ctx.fillRect(10, 10, 100, 100);
       }
 
     </script>
