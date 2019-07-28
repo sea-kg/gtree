@@ -1,6 +1,5 @@
 <?php
       include_once("gtree.php"); 
-
 ?><!doctype html>
 <html lang="ru">
   <head>
@@ -10,10 +9,7 @@
     <script src="./js/jquery-3.2.1.slim.min.js"></script>
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./data.js"></script>
-    <script src="./js/index.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./index.css">
 
     <title>Генеологическое дерево</title>
   </head>

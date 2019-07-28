@@ -1,4 +1,6 @@
-<!doctype html>
+<?php
+      include_once("gtree.php"); 
+?><!doctype html>
 <html lang="ru">
   <head>
     <meta charset="utf-8">
@@ -7,10 +9,18 @@
     <script src="./js/jquery-3.2.1.slim.min.js"></script>
     <script src="./js/popper.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./data.js"></script>
     <script src="./js/index.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./index.css">
+    <style>
+.genealogical-tree {
+    position: fixed;
+    border: 1px solid black;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 60px);
+    overflow: scroll;
+}
+    </style>
 
     <title>Генеалогическое древо</title>
   </head>
@@ -32,49 +42,122 @@
             </ul>
           </div>
         </nav>
-    <div id="gen_tree" class="genealogical-tree">
-      <div class="gt-title">Генеалогическое древо</div>
-      <div class="gt-years" id="gt_years"></div>
-      <div class="gt-persons" id="gt_persons"></div>
+    <div class="genealogical-tree">
+      <canvas id="gtree"></canvas>
     </div>
     <script>
-      var gt_years_start = 1900;
-      var gt_years_end = 2050;
-      var gt_years_step = 10; // in years
-      var gt_years_step_px = 100; // in px
-      var gt_years_padding = 20;
-      var gt_years_width = ((gt_years_end - gt_years_start) / gt_years_step) * gt_years_step_px + gt_years_step_px + 2*gt_years_padding;
 
-      function calcX_in_px(year) {
-        var x = year - gt_years_start;
-        var k = gt_years_step_px / gt_years_step;
-        var x = x*k + gt_years_padding;
-        return x;
-      }
-      // gt_years
-      $('#gt_years').html('');
-      $('#gt_years').css({'width': gt_years_width + 'px'});
-      for (var i = gt_years_end; i >= gt_years_start; i = i - gt_years_step) {
-        $('#gt_years').append('<div class="gt-year-mark" style="left: ' + calcX_in_px(i) + 'px">' + i + ' г.</div>');
-      }
+    <?php
+        // father / mother
+        $conn = GTree::dbConn();
+        $persons = array();
+        $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
+        $minyear = 5000;
+        $maxyear = 0;
+        $stmt->execute(array());
+        while ($row = $stmt->fetch()) {
+          if ($row['bornyear'] == 0) {
+            continue;
+          }
+          
+          $minyear = $row['bornyear'] < $minyear ? $row['bornyear'] : $minyear;
+          $maxyear = $row['bornyear'] > $maxyear ? $row['bornyear'] : $maxyear;
+          
 
-      for (var i = 0; i < gt.length; i++) {
-        var p = gt[i];
-        var years_of_life = '' + p.born_year;
-        if (p.year_of_death) {
-          years_of_life += ' - ' + p.year_of_death;
+          if ($row['monthofdeath'] > 0) {
+            $maxyear = $row['monthofdeath'] > $maxyear ? $row['monthofdeath'] : $maxyear;
+          }
+
+          $personid = intval($row['id']);
+          if ($row['private'] == 'yes') {
+            $persons[$personid] = array(
+              'firstname' => $row['firstname'],
+              'lastname' => '',
+              'bornyear' => intval($row['bornyear']),
+              'mother' => intval($row['mother']),
+              'father' => intval($row['father']),
+            );
+          } else {
+            $persons[$personid] = array(
+              'firstname' => $row['firstname'],
+              'lastname' => $row['lastname'],
+              'bornyear' => intval($row['bornyear']),
+              'mother' => intval($row['mother']),
+              'father' => intval($row['father']),
+            );
+          }
         }
-        var title = p.name;
-        p.left = calcX_in_px(p.born_year);
-        
-        $('#gt_persons').append(''
-          + '<div class="gt-person" style="left: ' + p.left + 'px; top: ' + p.top + 'px">'
-          + '   <div class="gt-person-years-of-life">'  + years_of_life + '</div>'
-          + '   <div class="gt-person-name">'  + title + '</div>'
-          + '</div>'
-        );
-      }
+
+        echo 'var gtree_minyear = '.$minyear.";\r\n";
+        echo 'var gtree_maxyear = '.$maxyear.";\r\n";
+        echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
+    ?>
+      gtree_minyear = gtree_minyear - gtree_minyear % 10;
+      gtree_maxyear = gtree_maxyear - gtree_maxyear % 10 + 10;
       
+
+      var gtree_padding = 10;
+      var gtree_yearstep = 10;
+      var gtree_width = gtree_maxyear - gtree_minyear;
+      var gtree_card_width = 100;
+      var gtree_card_height = 52;
+
+      gtree_width = gtree_width * gtree_yearstep + 15*gtree_yearstep + 2*gtree_padding;
+      
+      function calcX_in_px(year) {
+        var ret = year - gtree_minyear; 
+        ret = ret * gtree_yearstep + gtree_padding;
+        return ret;
+      }
+
+      var canvas = document.getElementById("gtree");
+      var ctx = canvas.getContext("2d");
+      canvas.width  = gtree_width;
+      // canvas.height = 300; 
+      canvas.style.width  = gtree_width + 'px';
+      // canvas.style.height = '600px';
+
+      ctx.fillStyle = "black";
+      // ctx.fillRect(10, 10, 100, 100);
+      ctx.lineWidth = 3;
+
+      ctx.beginPath();
+      ctx.moveTo(gtree_padding, gtree_padding + 25);
+      ctx.lineTo(gtree_width - gtree_padding, gtree_padding + 25);
+      ctx.stroke();
+
+      ctx.font = "16px Arial";
+      for (var y = gtree_maxyear; y >= gtree_minyear; y = y - 10) {
+        x1 = calcX_in_px(y);
+
+        ctx.beginPath();
+        ctx.moveTo(x1, gtree_padding + 10);
+        ctx.lineTo(x1, gtree_padding + 30);
+        ctx.stroke();
+        
+        ctx.fillText('' + y, x1 + 3, 30);
+
+        console.log(y);
+      }
+      ctx.lineWidth = 1;
+      for (var i in gt) {
+        var p = gt[i];
+        console.log(p);
+        var x1 = calcX_in_px(p.bornyear);
+        var y1 = 50; // TODO
+        ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
+        var d = 16;
+        ctx.fillText('' + p.bornyear, x1 + 3, y1 + d);
+        if (p.lastname) {
+          d += 16;
+          ctx.fillText('' + p.lastname, x1 + 3, y1 + d);
+        }
+        d += 16;
+        ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
+
+        // ctx.fillRect(10, 10, 100, 100);
+      }
+
     </script>
   </body>
 </html>
