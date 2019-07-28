@@ -20,6 +20,7 @@ $dayofdeath = 0;
 $mother = 0;
 $father = 0;
 $private = 'no';
+$gtline = 0;
 
 $sex = 'male';
 
@@ -44,6 +45,7 @@ if (isset($_GET['personid'])) {
         $mother = $row['mother'];
         $father = $row['father'];
         $private = $row['private'];
+        $gtline = intval($row['gtline']);
     } else {
         $error = 'Пeрсона не найдена';
     }
@@ -65,7 +67,8 @@ if (isset($_POST['do_person_update'])) {
     $mother = intval($_POST['mother']);
     $father = intval($_POST['father']);
     $private = $_POST['private'];
-    
+    $gtline = intval($_POST['gtline']);
+
     $fullname = $lastname;
     if ($bornlastname != '') {
         $fullname .= ' ('.$bornlastname.')';
@@ -89,7 +92,8 @@ if (isset($_POST['do_person_update'])) {
             dayofdeath = ?,
             mother = ?,
             father = ?,
-            `private` = ?
+            `private` = ?,
+            gtline = ?
         WHERE
             id = ?
         ');
@@ -109,6 +113,7 @@ if (isset($_POST['do_person_update'])) {
         $mother,
         $father,
         $private,
+        $gtline,
         $personid,
     );
     if (!$stmt->execute($values)) {
@@ -284,10 +289,11 @@ include_once("head.php");
         <select class="form-control" name="private">
             <option value="yes" <?php echo ($private == 'yes' ? ' selected ' : ''); ?>>Да</option>
             <option value="no" <?php echo ($private == 'no' ? ' selected ' : ''); ?>>Нет</option>
-            
-            
-
         </select>
+    </div>
+    <div class="form-group">
+        <label for="password">Строка в дереве</label>
+        <input type="number" class="form-control" name="gtline" value="<?php echo $gtline; ?>"/>
     </div>
 
     <button class="btn btn-primary" name="do_person_update" >Обновить</button>

@@ -21,7 +21,7 @@ if (isset($_POST['do_person_add'])) {
     $mother = intval($_POST['mother']);
     $father = intval($_POST['father']);
     $private = $_POST['private'];
-
+    $gtline = $_POST['gtline'];
     $borndate = $bornday.'-'.$bornmonth.'-'.$bornyear;
     
     $fullname = $lastname;
@@ -46,11 +46,13 @@ if (isset($_POST['do_person_add'])) {
             dayofdeath,
             mother,
             father,
-            `private`
+            `private`,
+            gtline
         ) VALUES(
             ?,?,?,?,?,
             ?,?,?,?,?,
-            ?,?,?,?,?
+            ?,?,?,?,?,
+            ?
         );');
     $values = array(
         $fullname,
@@ -68,6 +70,7 @@ if (isset($_POST['do_person_add'])) {
         $mother,
         $father,
         $private,
+        $gtline,
     );
     if (!$stmt->execute($values)) {
         $error = 'Что то пошло не так.';
@@ -241,6 +244,10 @@ include_once("head.php");
             <option value="no">Нет</option>    
             <option value="yes">Да</option>
         </select>
+    </div>
+    <div class="form-group">
+        <label for="password">Строка в дереве</label>
+        <input type="number" class="form-control" name="gtline" value="0"/>
     </div>
 
     <button class="btn btn-primary" name="do_person_add" >Добавить</button>
