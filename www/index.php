@@ -43,7 +43,7 @@
           </div>
         </nav>
     <div class="genealogical-tree">
-      <canvas id="gtree"></canvas>
+      <canvas id="gtree" width="500" height="500"></canvas>
     </div>
     <script>
 
@@ -70,25 +70,23 @@
           }
 
           $personid = intval($row['id']);
-          if ($row['private'] == 'yes') {
-            $persons[$personid] = array(
-              'firstname' => $row['firstname'],
-              'lastname' => '',
-              'bornyear' => intval($row['bornyear']),
-              'mother' => intval($row['mother']),
-              'father' => intval($row['father']),
-              'gtline' => intval($row['gtline']),
-            );
-          } else {
-            $persons[$personid] = array(
-              'firstname' => $row['firstname'],
-              'lastname' => $row['lastname'],
-              'bornyear' => intval($row['bornyear']),
-              'mother' => intval($row['mother']),
-              'father' => intval($row['father']),
-              'gtline' => intval($row['gtline']),
-            );
+          $lastname = $row['lastname'];
+          if ($row['bornlastname'] != '') {
+            $lastname = $row['bornlastname'];
           }
+
+          if ($row['private'] == 'yes') {
+            $lastname = '';
+          }
+
+          $persons[$personid] = array(
+            'firstname' => $row['firstname'],
+            'lastname' => $lastname,
+            'bornyear' => intval($row['bornyear']),
+            'mother' => intval($row['mother']),
+            'father' => intval($row['father']),
+            'gtline' => intval($row['gtline']),
+          );
         }
 
         echo 'var gtree_minyear = '.$minyear.";\r\n";
