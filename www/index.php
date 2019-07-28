@@ -54,6 +54,7 @@
         $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
         $minyear = 5000;
         $maxyear = 0;
+        $maxgtline = 0;
         $stmt->execute(array());
         while ($row = $stmt->fetch()) {
           if ($row['bornyear'] == 0) {
@@ -62,7 +63,7 @@
           
           $minyear = $row['bornyear'] < $minyear ? $row['bornyear'] : $minyear;
           $maxyear = $row['bornyear'] > $maxyear ? $row['bornyear'] : $maxyear;
-          
+          $maxgtline = $row['gtline'] > $maxgtline ? $row['gtline'] : $maxgtline;
 
           if ($row['monthofdeath'] > 0) {
             $maxyear = $row['monthofdeath'] > $maxyear ? $row['monthofdeath'] : $maxyear;
@@ -76,6 +77,7 @@
               'bornyear' => intval($row['bornyear']),
               'mother' => intval($row['mother']),
               'father' => intval($row['father']),
+              'gtline' => intval($row['gtline']),
             );
           } else {
             $persons[$personid] = array(
@@ -84,12 +86,15 @@
               'bornyear' => intval($row['bornyear']),
               'mother' => intval($row['mother']),
               'father' => intval($row['father']),
+              'gtline' => intval($row['gtline']),
             );
           }
         }
 
         echo 'var gtree_minyear = '.$minyear.";\r\n";
         echo 'var gtree_maxyear = '.$maxyear.";\r\n";
+        echo 'var gtree_maxgtline = '.$maxgtline.";\r\n";
+        
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
       gtree_minyear = gtree_minyear - gtree_minyear % 10;
@@ -101,8 +106,10 @@
       var gtree_width = gtree_maxyear - gtree_minyear;
       var gtree_card_width = 100;
       var gtree_card_height = 52;
-
+      var gtree_gtline = 70;
+      
       gtree_width = gtree_width * gtree_yearstep + 15*gtree_yearstep + 2*gtree_padding;
+      gtree_height = gtree_maxgtline * gtree_gtline + 2*gtree_padding + 100;
       
       function calcX_in_px(year) {
         var ret = year - gtree_minyear; 
@@ -113,9 +120,9 @@
       var canvas = document.getElementById("gtree");
       var ctx = canvas.getContext("2d");
       canvas.width  = gtree_width;
-      // canvas.height = 300; 
+      canvas.height = gtree_height; 
       canvas.style.width  = gtree_width + 'px';
-      // canvas.style.height = '600px';
+      canvas.style.height = gtree_height + 'px';
 
       ctx.fillStyle = "black";
       // ctx.fillRect(10, 10, 100, 100);
@@ -144,7 +151,8 @@
         var p = gt[i];
         console.log(p);
         var x1 = calcX_in_px(p.bornyear);
-        var y1 = 50; // TODO
+        var y1 = 50 + p.gtline * gtree_gtline; // TODO
+        
         ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
         var d = 16;
         ctx.fillText('' + p.bornyear, x1 + 3, y1 + d);
