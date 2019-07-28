@@ -20,6 +20,7 @@ if (isset($_POST['do_person_add'])) {
     $dayofdeath = intval($_POST['dayofdeath']);
     $mother = intval($_POST['mother']);
     $father = intval($_POST['father']);
+    $private = $_POST['private'];
 
     $borndate = $bornday.'-'.$bornmonth.'-'.$bornyear;
     
@@ -44,11 +45,12 @@ if (isset($_POST['do_person_add'])) {
             monthofdeath,
             dayofdeath,
             mother,
-            father
+            father,
+            `private`
         ) VALUES(
             ?,?,?,?,?,
             ?,?,?,?,?,
-            ?,?,?,?
+            ?,?,?,?,?
         );');
     $values = array(
         $fullname,
@@ -65,6 +67,7 @@ if (isset($_POST['do_person_add'])) {
         $dayofdeath,
         $mother,
         $father,
+        $private,
     );
     if (!$stmt->execute($values)) {
         $error = 'Что то пошло не так.';
@@ -229,6 +232,14 @@ include_once("head.php");
                 echo '<option value="0">-</option>';
                 echo $persons_list_male;
             ?>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Приватные данные</label>
+        <select class="form-control" name="private">
+            <option value="no">Нет</option>    
+            <option value="yes">Да</option>
         </select>
     </div>
 

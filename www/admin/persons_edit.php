@@ -19,6 +19,7 @@ $monthofdeath = 0;
 $dayofdeath = 0;
 $mother = 0;
 $father = 0;
+$private = 'no';
 
 $sex = 'male';
 
@@ -42,7 +43,7 @@ if (isset($_GET['personid'])) {
         $dayofdeath = $row['dayofdeath'];
         $mother = $row['mother'];
         $father = $row['father'];
-
+        $private = $row['private'];
     } else {
         $error = 'Пeрсона не найдена';
     }
@@ -63,8 +64,7 @@ if (isset($_POST['do_person_update'])) {
     $dayofdeath = intval($_POST['dayofdeath']);
     $mother = intval($_POST['mother']);
     $father = intval($_POST['father']);
-
-    $borndate = $bornday.'-'.$bornmonth.'-'.$bornyear;
+    $private = $_POST['private'];
     
     $fullname = $lastname;
     if ($bornlastname != '') {
@@ -88,7 +88,8 @@ if (isset($_POST['do_person_update'])) {
             monthofdeath = ?,
             dayofdeath = ?,
             mother = ?,
-            father = ?
+            father = ?,
+            `private` = ?
         WHERE
             id = ?
         ');
@@ -107,7 +108,8 @@ if (isset($_POST['do_person_update'])) {
         $dayofdeath,
         $mother,
         $father,
-        $personid
+        $private,
+        $personid,
     );
     if (!$stmt->execute($values)) {
         $error = 'Что то пошло не так.';
@@ -274,6 +276,17 @@ include_once("head.php");
                 echo '<option value="0">-</option>';
                 echo $persons_list_male;
             ?>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="password">Приватные данные</label>
+        <select class="form-control" name="private">
+            <option value="yes" <?php echo ($private == 'yes' ? ' selected ' : ''); ?>>Да</option>
+            <option value="no" <?php echo ($private == 'no' ? ' selected ' : ''); ?>>Нет</option>
+            
+            
+
         </select>
     </div>
 
