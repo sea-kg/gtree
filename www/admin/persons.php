@@ -40,7 +40,7 @@ include_once("head.php");
     <?php
     
     $conn = GTree::dbConn();
-    $stmt = $conn->prepare('SELECT * FROM persons');
+    $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
     $stmt->execute(array());
     while ($row = $stmt->fetch()) {
         $personid = $row['id'];
