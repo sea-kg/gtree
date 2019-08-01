@@ -63,6 +63,7 @@ include_once("head.php");
             'firstname' => $row['firstname'],
             'lastname' => $lastname,
             'bornyear' => intval($row['bornyear']),
+            'bornyear_notexactly' => $row['bornyear_notexactly'],
             'mother' => intval($row['mother']),
             'father' => intval($row['father']),
             'gtline' => intval($row['gtline']),
@@ -210,10 +211,14 @@ include_once("head.php");
           ctx.fillStyle = selectedCard == i ? "#E6ECDF" : "white";
           ctx.fillRect(x1, y1, gtree_card_width, gtree_card_height);
           ctx.fillStyle = "black";
+          var year_print = p.bornyear;
+          if (p.bornyear_notexactly == 'yes') {
+            year_print += ' (не точно)';
+          }
 
           ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
           var d = 16;
-          ctx.fillText('' + p.bornyear, x1 + 3, y1 + d);
+          ctx.fillText('' + year_print, x1 + 3, y1 + d);
           d += 16;
           ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
           if (p.lastname) {
