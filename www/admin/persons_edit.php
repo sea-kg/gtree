@@ -21,6 +21,8 @@ $mother = 0;
 $father = 0;
 $private = 'no';
 $gtline = 0;
+$bornyear_notexactly = 'no';
+$yearofdeath_notexactly = 'no';
 
 $sex = 'male';
 
@@ -46,6 +48,9 @@ if (isset($_GET['personid'])) {
         $father = $row['father'];
         $private = $row['private'];
         $gtline = intval($row['gtline']);
+        $bornyear_notexactly = $row['bornyear_notexactly'];
+        $yearofdeath_notexactly = $row['yearofdeath_notexactly'];
+
     } else {
         $error = 'Пeрсона не найдена';
     }
@@ -68,6 +73,20 @@ if (isset($_POST['do_person_update'])) {
     $father = intval($_POST['father']);
     $private = $_POST['private'];
     $gtline = intval($_POST['gtline']);
+    $bornyear_notexactly = $_POST['bornyear_notexactly'];
+    $yearofdeath_notexactly = $_POST['yearofdeath_notexactly'];
+
+    if (!$bornyear_notexactly) {
+        $bornyear_notexactly = 'no';
+    } else if ($bornyear_notexactly == 'on') {
+        $bornyear_notexactly = 'yes';
+    }
+
+    if (!$yearofdeath_notexactly) {
+        $yearofdeath_notexactly = 'no';
+    } else if ($yearofdeath_notexactly == 'on') {
+        $yearofdeath_notexactly = 'yes';
+    }
 
     $fullname = $lastname;
     if ($bornlastname != '') {
@@ -93,7 +112,9 @@ if (isset($_POST['do_person_update'])) {
             mother = ?,
             father = ?,
             `private` = ?,
-            gtline = ?
+            gtline = ?,
+            bornyear_notexactly = ?,
+            yearofdeath_notexactly = ?
         WHERE
             id = ?
         ');
@@ -114,6 +135,8 @@ if (isset($_POST['do_person_update'])) {
         $father,
         $private,
         $gtline,
+        $bornyear_notexactly,
+        $yearofdeath_notexactly,
         $personid,
     );
     if (!$stmt->execute($values)) {
@@ -214,6 +237,13 @@ include_once("head.php");
                             }
                         ?>
                     </select>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                            id="bornyear_notexactly" name="bornyear_notexactly" 
+                            <?php echo $bornyear_notexactly == 'yes' ? 'checked' : '' ?>
+                        />
+                        <label class="custom-control-label" for="bornyear_notexactly">Год рождения не точен</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -259,6 +289,13 @@ include_once("head.php");
                             }
                         ?>
                     </select>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" 
+                            id="yearofdeath_notexactly" name="yearofdeath_notexactly" 
+                            <?php echo $yearofdeath_notexactly == 'yes' ? 'checked' : '' ?>
+                        />
+                        <label class="custom-control-label" for="yearofdeath_notexactly">Год смерти не точен</label>
+                    </div>
                 </div>
             </div>
         </div>

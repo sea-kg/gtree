@@ -24,6 +24,21 @@ if (isset($_POST['do_person_add'])) {
     $gtline = $_POST['gtline'];
     $borndate = $bornday.'-'.$bornmonth.'-'.$bornyear;
     
+    $bornyear_notexactly = $_POST['bornyear_notexactly'];
+    $yearofdeath_notexactly = $_POST['yearofdeath_notexactly'];
+
+    if (!$bornyear_notexactly) {
+        $bornyear_notexactly = 'no';
+    } else if ($bornyear_notexactly == 'on') {
+        $bornyear_notexactly = 'yes';
+    }
+
+    if (!$yearofdeath_notexactly) {
+        $yearofdeath_notexactly = 'no';
+    } else if ($yearofdeath_notexactly == 'on') {
+        $yearofdeath_notexactly = 'yes';
+    }
+
     $fullname = $lastname;
     if ($bornlastname != '') {
         $fullname .= ' ('.$bornlastname.')';
@@ -47,12 +62,14 @@ if (isset($_POST['do_person_add'])) {
             mother,
             father,
             `private`,
-            gtline
+            gtline,
+            bornyear_notexactly,
+            yearofdeath_notexactly
         ) VALUES(
             ?,?,?,?,?,
             ?,?,?,?,?,
             ?,?,?,?,?,
-            ?
+            ?,?,?
         );');
     $values = array(
         $fullname,
@@ -71,6 +88,8 @@ if (isset($_POST['do_person_add'])) {
         $father,
         $private,
         $gtline,
+        $bornyear_notexactly,
+        $yearofdeath_notexactly,
     );
     if (!$stmt->execute($values)) {
         $error = 'Что то пошло не так.';
@@ -168,6 +187,13 @@ include_once("head.php");
                             }
                         ?>
                     </select>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                            id="bornyear_notexactly" name="bornyear_notexactly" 
+                            <?php echo $bornyear_notexactly == 'yes' ? 'checked' : '' ?>
+                        />
+                        <label class="custom-control-label" for="bornyear_notexactly">Год рождения не точен</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -213,6 +239,13 @@ include_once("head.php");
                             }
                         ?>
                     </select>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" 
+                            id="yearofdeath_notexactly" name="yearofdeath_notexactly" 
+                            <?php echo $yearofdeath_notexactly == 'yes' ? 'checked' : '' ?>
+                        />
+                        <label class="custom-control-label" for="yearofdeath_notexactly">Год смерти не точен</label>
+                    </div>
                 </div>
             </div>
         </div>

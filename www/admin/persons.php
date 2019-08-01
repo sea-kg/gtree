@@ -58,10 +58,20 @@ include_once("head.php");
             $father = '-';
         }
 
+        $bornyear_notexactly = '';
+        if ($row['bornyear_notexactly'] == 'yes') {
+            $bornyear_notexactly = ' (не точно)';
+        }
+
+        $yearofdeath_notexactly = '';
+        if ($row['yearofdeath_notexactly'] == 'yes') {
+            $yearofdeath_notexactly = ' (не точно)';
+        }
+
         echo '
         <tr>
             <td>#'.$personid.'</td>
-            <td>'.$row['bornyear'].' - '.$row['yearofdeath'].' </td>
+            <td>'.$row['bornyear'].$bornyear_notexactly.' - '.$row['yearofdeath'].$yearofdeath_notexactly.' </td>
             <td>'.$row['fullname'].' <a class="btn btn-primary" href="persons_edit.php?personid='.$personid.'">Изменить</a></td>
             <td>'.$father.'</td>
             <td>'.$mother.'</td>

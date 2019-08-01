@@ -82,7 +82,7 @@ include_once("head.php");
       var gtree_padding = 10;
       var gtree_yearstep = 10;
       var gtree_width = gtree_maxyear - gtree_minyear;
-      var gtree_card_width = 100;
+      var gtree_card_width = 120;
       var gtree_card_height = 52;
       var gtree_gtline = 70;
       var gtree_gtline_top = 50;

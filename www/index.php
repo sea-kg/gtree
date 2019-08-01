@@ -83,6 +83,7 @@
             'firstname' => $row['firstname'],
             'lastname' => $lastname,
             'bornyear' => intval($row['bornyear']),
+            'bornyear_notexactly' => $row['bornyear_notexactly'],
             'mother' => intval($row['mother']),
             'father' => intval($row['father']),
             'gtline' => intval($row['gtline']),
@@ -102,7 +103,7 @@
       var gtree_padding = 10;
       var gtree_yearstep = 10;
       var gtree_width = gtree_maxyear - gtree_minyear;
-      var gtree_card_width = 100;
+      var gtree_card_width = 120;
       var gtree_card_height = 52;
       var gtree_gtline = 70;
       var gtree_gtline_top = 50;
@@ -217,8 +218,14 @@
           ctx.fillStyle = "black";
 
           ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
+          var year_print = '' + p.bornyear;
+
+          if (p.bornyear_notexactly == 'yes') {
+            year_print += ' (не точно)';
+          }
+
           var d = 16;
-          ctx.fillText('' + p.bornyear, x1 + 3, y1 + d);
+          ctx.fillText(year_print, x1 + 3, y1 + d);
           d += 16;
           ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
           if (p.lastname) {
