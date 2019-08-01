@@ -1,48 +1,32 @@
 <?php
-      include_once("gtree.php"); 
-?><!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <script src="./js/jquery-3.2.1.slim.min.js"></script>
-    <script src="./js/popper.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <style>
-.genealogical-tree {
-    position: fixed;
-    border: 1px solid black;
-    left: 10px;
-    width: calc(100% - 20px);
-    height: calc(100% - 60px);
-    overflow: scroll;
-}
-    </style>
 
-    <title>Генеалогическое древо</title>
-  </head>
-  <body>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">Генеологическое древо</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="index.php">Дерево</a>
-              </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="persons.php">Персоны</a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      
-    <div class="genealogical-tree">
+$dir_persons = dirname(__FILE__);
+include_once($dir_persons."/../gtree.php");
+GTree::startAdminPage();
+
+if (isset($_POST['update_gtlines_in_tree'])) {
+  $data = json_decode($_POST['data'], true);
+  $conn = GTree::dbConn();
+
+  foreach ($data as $i => $r) {
+    $stmt = $conn->prepare('UPDATE persons SET gtline = ? WHERE id = ?');
+    $stmt = $stmt->execute(array(
+      intval($r['gtline']),
+      intval($r['id']),
+    ));
+  }
+  echo "OK";
+  return;
+}
+
+include_once("head.php");
+?>
+<br>
+<div>
+  <div class="btn btn-primary" id="save_tree">Сохранить измененное дерево</div>
+</div>
+<br>
+<div class="genealogical-tree">
       <canvas id="gtree" width="500" height="500"></canvas>
     </div>
     <script>
@@ -75,10 +59,6 @@
             $lastname = $row['bornlastname'];
           }
 
-          if ($row['private'] == 'yes') {
-            $lastname = '';
-          }
-
           $persons[$personid] = array(
             'firstname' => $row['firstname'],
             'lastname' => $lastname,
@@ -91,7 +71,7 @@
 
         echo 'var gtree_minyear = '.$minyear.";\r\n";
         echo 'var gtree_maxyear = '.$maxyear.";\r\n";
-        echo 'var gtree_maxgtline = '.$maxgtline.";\r\n";
+        echo 'var gtree_maxgtline = '.$maxgtline." + 1;\r\n";
         
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
@@ -133,6 +113,21 @@
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, gtree_width, gtree_height);
         ctx.strokeRect(0, 0, gtree_width, gtree_height);
+        ctx.strokeStyle = "#E9F0E0";
+
+        for (var y = 0; y <= gtree_maxgtline; y++) {
+          var y1 = gtree_gtline_top + y * gtree_gtline;
+          y1 = y1 - (gtree_gtline - gtree_card_height) / 2;
+
+          ctx.beginPath();
+          ctx.moveTo(0, y1);
+          ctx.lineTo(gtree_width, y1);
+          ctx.stroke();
+          
+          ctx.fillText('' + y, x1 + 3, 30);
+
+          // console.log(y);
+        }
 
         ctx.strokeStyle = "black";
         ctx.fillStyle = "black";
@@ -212,7 +207,7 @@
           gt[i].y1 = y1;
 
           // fill          
-          ctx.fillStyle = "white";
+          ctx.fillStyle = selectedCard == i ? "#E6ECDF" : "white";
           ctx.fillRect(x1, y1, gtree_card_width, gtree_card_height);
           ctx.fillStyle = "black";
 
@@ -227,8 +222,114 @@
           }
         }
       }
+      
+      var selectedCard = -1;
+      var movingEnable = false;
+
+      canvas.onmouseover = function(event) {
+          // var target = event.target;
+          movingEnable = false;
+      };
+
+      canvas.onmouseout = function(event) {
+          // var target = event.target;
+          movingEnable = false;
+      };
+
+      canvas.onmouseup = function(event) {
+        var target = event.target;
+        if (movingEnable) {
+          movingEnable = false;
+        }
+      }
+
+      canvas.onmousedown = function(event) {
+          var target = event.target;
+          if (selectedCard >= 0) {
+            // console.log(target);
+            movingEnable = true;
+          }
+      };
+
+      canvas.onmousemove = function(event) {
+          var target = event.target;
+          // console.log(event);
+          var co = target.getBoundingClientRect();
+          // console.log(co);
+          var x0 = event.clientX - co.left;
+          var y0 = event.clientY - co.top;
+
+          if (movingEnable && selectedCard >= 0) {
+            y0 = y0 - gtree_gtline_top;
+            y0 = y0 / gtree_gtline;
+            y0 = Math.floor(y0);
+            // console.log(y0);
+            if (gt[selectedCard].gtline != y0) {
+              gt[selectedCard].gtline = y0;
+              update_gtree();
+            }
+            return;
+          }
+          
+          var changesExists = false;
+          selectedCard = -1;
+          for (var i in gt) {
+            var x1 = gt[i].x1;
+            var x2 = x1 + gtree_card_width;
+            var y1 = gt[i].y1;
+            var y2 = y1 + gtree_card_height;
+            var res = false;
+
+            if (x0 > x1 && x0 < x2 && y0 > y1 && y0 < y2) {
+              res = true;
+              target.style.cursor = 'pointer';
+              selectedCard = i;
+            }
+
+            if (gt[i].highlight != res) {
+              changesExists = true;
+              gt[i].highlight = res;
+            }
+          }
+          if (selectedCard < 0) {
+            target.style.cursor = 'default';
+          }
+          if (changesExists) {
+            update_gtree();
+          }
+      };
 
       update_gtree();
+
+
+      $('#save_tree').unbind().bind('click', function() {
+        var dataSend = [];
+        for (var id in gt) {
+          dataSend.push({
+            "id": id,
+            "gtline": gt[id].gtline,
+          });
+        }
+        $.ajax({
+          url: 'tree_edit.php',
+          type: "POST",
+          data: {
+            "update_gtlines_in_tree": "",
+            "data": JSON.stringify(dataSend),
+          },
+          // dataType: dataType
+        }).done(function(data) {
+          alert(data);
+        })
+      })
     </script>
-  </body>
-</html>
+
+    </tbody>
+</table>
+
+<?php
+
+
+
+include_once("footer.php");
+

@@ -14,10 +14,20 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/simplemde.min.css?v=2">
 
-    <script type="text/javascript" src="../js/jquery-3.2.1.slim.min.js"></script>
+    <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="../js/popper.min.js"></script>
     <script type="text/javascript" src="../js/simplemde.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+    <style>
+.genealogical-tree {
+    position: fixed;
+    border: 1px solid black;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 180px);
+    overflow: scroll;
+}
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -38,7 +48,7 @@
                 <a class="nav-link" href="persons.php">Персоны</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="marriages.php">Браки</a>
+                <a class="nav-link" href="tree_edit.php">Редактор дерава</a>
             </li>
         </ul>
         </div>
