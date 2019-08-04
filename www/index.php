@@ -101,7 +101,7 @@
       
 
       var gtree_padding = 10;
-      var gtree_yearstep = 10;
+      var gtree_yearstep = 15;
       var gtree_width = gtree_maxyear - gtree_minyear;
       var gtree_card_width = 120;
       var gtree_card_height = 52;
