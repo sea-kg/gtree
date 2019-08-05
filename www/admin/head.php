@@ -48,7 +48,7 @@
                 <a class="nav-link" href="persons.php">Персоны</a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="tree_edit.php">Редактор дерава</a>
+                <a class="nav-link" href="tree_edit.php">Редактор дерева</a>
             </li>
         </ul>
         </div>
