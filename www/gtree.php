@@ -26,11 +26,60 @@ class GTree {
 	);
 	
 	static $gtree_padding = 10;
-	static $gtree_yearstep = 15;
-	static $gtree_card_width = 120;
-	static $gtree_card_height = 52;
-	static $gtree_gtline = 70;
+	static $gtree_yearstep = 16;
+	static $gtree_card_width = 159;
+	static $gtree_card_height = 62;
+	static $gtree_gtline = 86;
 	static $gtree_gtline_top = 50;
+
+	static function calculateHeight() {
+		$gtree_maxgtline = 0;
+		$conn = GTree::dbConn();
+		$stmt = $conn->prepare('SELECT MAX(gtline) as gtl FROM persons;');
+		$stmt->execute();
+		if ($row = $stmt->fetch()) {
+			$gtree_maxgtline = intval($row['gtl']);
+		}
+		return $gtree_maxgtline * GTree::$gtree_gtline + 2 * GTree::$gtree_padding + 100;
+	}
+
+	static function getMinBornYear() {
+		$gtree_minyear = 0;
+		$conn = GTree::dbConn();
+		$stmt = $conn->prepare('SELECT MIN(bornyear) as minbornyear FROM persons WHERE bornyear > 0;');
+		$stmt->execute();
+		if ($row = $stmt->fetch()) {
+			$gtree_minyear = intval($row['minbornyear']);
+		}
+		$gtree_minyear = $gtree_minyear - $gtree_minyear % 10;
+		return $gtree_minyear;
+	}
+
+	static function getMaxBornYear() {
+		$gtree_maxyear = 0;
+		$conn = GTree::dbConn();
+		$stmt = $conn->prepare('SELECT MAX(bornyear) as maxbornyear FROM persons WHERE bornyear > 0;');
+		$stmt->execute();
+		if ($row = $stmt->fetch()) {
+			$gtree_maxyear = intval($row['maxbornyear']);
+		}
+		$gtree_maxyear = $gtree_maxyear - $gtree_maxyear % 10 + 10;
+		return $gtree_maxyear;
+	}
+
+	static function calculateWidth() {
+		$gtree_minyear = GTree::getMinBornYear();
+		$gtree_maxyear = GTree::getMaxBornYear();
+		$gtree_width = $gtree_maxyear - $gtree_minyear;
+		$gtree_width = $gtree_width * GTree::$gtree_yearstep + 15 * GTree::$gtree_yearstep + 2 * GTree::$gtree_padding;
+		return $gtree_width;
+	}
+
+	static function calcX_in_px($gtree_minyear, $year) {
+		$ret = $year - $gtree_minyear; 
+		$ret = $ret * GTree::$gtree_yearstep + GTree::$gtree_padding;
+		return $ret;
+	}
 
 	static function dbConn() {
 		if (GTree::$CONN != null)

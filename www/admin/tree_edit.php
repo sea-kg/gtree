@@ -38,7 +38,6 @@ include_once("head.php");
         $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
         $minyear = 5000;
         $maxyear = 0;
-        $maxgtline = 0;
         $stmt->execute(array());
         while ($row = $stmt->fetch()) {
           if ($row['bornyear'] == 0) {
@@ -47,11 +46,6 @@ include_once("head.php");
           
           $minyear = $row['bornyear'] < $minyear ? $row['bornyear'] : $minyear;
           $maxyear = $row['bornyear'] > $maxyear ? $row['bornyear'] : $maxyear;
-          $maxgtline = $row['gtline'] > $maxgtline ? $row['gtline'] : $maxgtline;
-
-          if ($row['monthofdeath'] > 0) {
-            $maxyear = $row['monthofdeath'] > $maxyear ? $row['monthofdeath'] : $maxyear;
-          }
 
           $personid = intval($row['id']);
           $lastname = $row['lastname'];
@@ -64,31 +58,28 @@ include_once("head.php");
             'lastname' => $lastname,
             'bornyear' => intval($row['bornyear']),
             'bornyear_notexactly' => $row['bornyear_notexactly'],
+            'sex' => intval($row['sex']),
+            'yearofdeath' => intval($row['yearofdeath']),
+            'yearofdeath_notexactly' => $row['yearofdeath_notexactly'],
             'mother' => intval($row['mother']),
             'father' => intval($row['father']),
             'gtline' => intval($row['gtline']),
           );
         }
 
-        echo 'var gtree_minyear = '.$minyear.";\r\n";
-        echo 'var gtree_maxyear = '.$maxyear.";\r\n";
-        echo 'var gtree_maxgtline = '.$maxgtline." + 1;\r\n";
+        echo 'var gtree_minyear = '.GTree::getMinBornYear().";\r\n";
+        echo 'var gtree_maxyear = '.GTree::getMaxBornYear().";\r\n";
         echo 'var gtree_padding = '.GTree::$gtree_padding.";\r\n";
         echo 'var gtree_yearstep = '.GTree::$gtree_yearstep.";\r\n";
         echo 'var gtree_card_width = '.GTree::$gtree_card_width.";\r\n";
         echo 'var gtree_card_height = '.GTree::$gtree_card_height.";\r\n";
         echo 'var gtree_gtline = '.GTree::$gtree_gtline.";\r\n";
         echo 'var gtree_gtline_top = '.GTree::$gtree_gtline_top.";\r\n";
-
+        echo 'var gtree_height = '.GTree::calculateHeight().";\r\n";
+        echo 'var gtree_width = '.GTree::calculateWidth().";\r\n";
+        
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
-      gtree_minyear = gtree_minyear - gtree_minyear % 10;
-      gtree_maxyear = gtree_maxyear - gtree_maxyear % 10 + 10;
-      
-      var gtree_width = gtree_maxyear - gtree_minyear;
-
-      gtree_width = gtree_width * gtree_yearstep + 15*gtree_yearstep + 2*gtree_padding;
-      gtree_height = gtree_maxgtline * gtree_gtline + 2*gtree_padding + 100;
       
       for (var i in gt) {
         gt[i].highlight = false;
@@ -115,9 +106,8 @@ include_once("head.php");
         ctx.strokeRect(0, 0, gtree_width, gtree_height);
         ctx.strokeStyle = "#E9F0E0";
 
-        for (var y = 0; y <= gtree_maxgtline; y++) {
-          var y1 = gtree_gtline_top + y * gtree_gtline;
-          y1 = y1 - (gtree_gtline - gtree_card_height) / 2;
+        for (var y = gtree_gtline_top; y <= gtree_height; y = y + gtree_gtline) {
+          var y1 = y - (gtree_gtline - gtree_card_height) / 2;
 
           ctx.beginPath();
           ctx.moveTo(0, y1);
@@ -210,14 +200,21 @@ include_once("head.php");
           ctx.fillStyle = selectedCard == i ? "#E6ECDF" : "white";
           ctx.fillRect(x1, y1, gtree_card_width, gtree_card_height);
           ctx.fillStyle = "black";
-          var year_print = p.bornyear;
+          var years_print = p.bornyear;
           if (p.bornyear_notexactly == 'yes') {
-            year_print += ' (не точно)';
+            years_print += '(пр.)';
+          }
+
+          if (p.yearofdeath > 0) {
+            years_print += ' - ' + p.yearofdeath;
+            if (p.yearofdeath_notexactly == 'yes') {
+              years_print += '(пр.)';
+            }
           }
 
           ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
           var d = 16;
-          ctx.fillText('' + year_print, x1 + 3, y1 + d);
+          ctx.fillText('' + years_print, x1 + 3, y1 + d);
           d += 16;
           ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
           if (p.lastname) {

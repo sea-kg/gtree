@@ -2,8 +2,8 @@
       include_once("gtree.php"); 
       include_once("head.php");
 ?>
-      
-    <div class="genealogical-tree">
+
+    <div class="genealogical-tree" id="renderimage_client">
       <canvas id="gtree" width="500" height="500"></canvas>
     </div>
     <script>
@@ -15,7 +15,6 @@
         $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
         $minyear = 5000;
         $maxyear = 0;
-        $gtree_maxgtline = 0;
         $stmt->execute(array());
         while ($row = $stmt->fetch()) {
           if ($row['bornyear'] == 0) {
@@ -24,7 +23,6 @@
           
           $minyear = $row['bornyear'] < $minyear ? $row['bornyear'] : $minyear;
           $maxyear = $row['bornyear'] > $maxyear ? $row['bornyear'] : $maxyear;
-          $gtree_maxgtline = $row['gtline'] > $gtree_maxgtline ? $row['gtline'] : $gtree_maxgtline;
 
           if ($row['monthofdeath'] > 0) {
             $maxyear = $row['monthofdeath'] > $maxyear ? $row['monthofdeath'] : $maxyear;
@@ -51,25 +49,19 @@
           );
         }
 
-        echo 'var gtree_minyear = '.$minyear.";\r\n";
-        echo 'var gtree_maxyear = '.$maxyear.";\r\n";
-        echo 'var gtree_maxgtline = '.$gtree_maxgtline.";\r\n";
+        echo 'var gtree_minyear = '.GTree::getMinBornYear().";\r\n";
+        echo 'var gtree_maxyear = '.GTree::getMaxBornYear().";\r\n";
         echo 'var gtree_padding = '.GTree::$gtree_padding.";\r\n";
         echo 'var gtree_yearstep = '.GTree::$gtree_yearstep.";\r\n";
         echo 'var gtree_card_width = '.GTree::$gtree_card_width.";\r\n";
         echo 'var gtree_card_height = '.GTree::$gtree_card_height.";\r\n";
         echo 'var gtree_gtline = '.GTree::$gtree_gtline.";\r\n";
         echo 'var gtree_gtline_top = '.GTree::$gtree_gtline_top.";\r\n";
-        
+        echo 'var gtree_height = '.GTree::calculateHeight().";\r\n";
+        echo 'var gtree_width = '.GTree::calculateWidth().";\r\n";
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
-      gtree_minyear = gtree_minyear - gtree_minyear % 10;
-      gtree_maxyear = gtree_maxyear - gtree_maxyear % 10 + 10;
 
-      var gtree_width = gtree_maxyear - gtree_minyear;
-      gtree_width = gtree_width * gtree_yearstep + 15*gtree_yearstep + 2*gtree_padding;
-      gtree_height = gtree_maxgtline * gtree_gtline + 2*gtree_padding + 100;
-      
       for (var i in gt) {
         gt[i].highlight = false;
       }
@@ -180,7 +172,7 @@
           var year_print = '' + p.bornyear;
 
           if (p.bornyear_notexactly == 'yes') {
-            year_print += ' (не точно)';
+            year_print += ' (пр.)';
           }
 
           var d = 16;

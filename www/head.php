@@ -34,6 +34,9 @@
                 <a class="nav-link" href="index.php">Дерево</a>
               </li>
               <li class="nav-item active">
+                <a class="nav-link" href="index2.php">Дерево 2</a>
+              </li>
+              <li class="nav-item active">
                 <a class="nav-link" href="persons.php">Персоны</a>
               </li>
               <li class="nav-item active">
