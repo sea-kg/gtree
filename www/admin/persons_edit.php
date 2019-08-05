@@ -153,7 +153,7 @@ $persons_list_male = '';
 $persons_list_female = '';
 
 $conn = GTree::dbConn();
-$stmt = $conn->prepare('SELECT * FROM persons');
+$stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear;');
 $stmt->execute(array());
 while ($row = $stmt->fetch()) {
     if ($row['sex'] == 'male' && $row['id'] != $personid) {
