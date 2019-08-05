@@ -73,20 +73,19 @@ include_once("head.php");
         echo 'var gtree_minyear = '.$minyear.";\r\n";
         echo 'var gtree_maxyear = '.$maxyear.";\r\n";
         echo 'var gtree_maxgtline = '.$maxgtline." + 1;\r\n";
-        
+        echo 'var gtree_padding = '.GTree::$gtree_padding.";\r\n";
+        echo 'var gtree_yearstep = '.GTree::$gtree_yearstep.";\r\n";
+        echo 'var gtree_card_width = '.GTree::$gtree_card_width.";\r\n";
+        echo 'var gtree_card_height = '.GTree::$gtree_card_height.";\r\n";
+        echo 'var gtree_gtline = '.GTree::$gtree_gtline.";\r\n";
+        echo 'var gtree_gtline_top = '.GTree::$gtree_gtline_top.";\r\n";
+
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
       gtree_minyear = gtree_minyear - gtree_minyear % 10;
       gtree_maxyear = gtree_maxyear - gtree_maxyear % 10 + 10;
       
-
-      var gtree_padding = 10;
-      var gtree_yearstep = 15;
       var gtree_width = gtree_maxyear - gtree_minyear;
-      var gtree_card_width = 120;
-      var gtree_card_height = 52;
-      var gtree_gtline = 70;
-      var gtree_gtline_top = 50;
 
       gtree_width = gtree_width * gtree_yearstep + 15*gtree_yearstep + 2*gtree_padding;
       gtree_height = gtree_maxgtline * gtree_gtline + 2*gtree_padding + 100;

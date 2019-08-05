@@ -25,6 +25,13 @@ class GTree {
 		12 => "Декабрь",
 	);
 	
+	static $gtree_padding = 10;
+	static $gtree_yearstep = 15;
+	static $gtree_card_width = 120;
+	static $gtree_card_height = 52;
+	static $gtree_gtline = 70;
+	static $gtree_gtline_top = 50;
+
 	static function dbConn() {
 		if (GTree::$CONN != null)
 			return GTree::$CONN;
