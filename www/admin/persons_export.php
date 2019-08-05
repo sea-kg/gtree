@@ -1,0 +1,91 @@
+<?php
+
+$dir_persons = dirname(__FILE__);
+include_once($dir_persons."/../gtree.php");
+GTree::startAdminPage();
+
+$data = array();
+$data['persons'] = array();
+
+$conn = GTree::dbConn();
+$stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear;');
+$stmt->execute();
+
+$persons_by_ids = array();
+
+while ($row = $stmt->fetch()) {
+    $id = intval($row['id']);
+    $uid = $row['uid'];
+    $persons_by_ids[$id] = $uid;
+
+    $data['persons'][] = array(
+        'uid' => $uid,
+        'fullname' => $row['fullname'],
+        'firstname' => $row['firstname'],
+        'secondname' => $row['secondname'],
+        'lastname' => $row['lastname'],
+        'bornlastname' => $row['bornlastname'],
+        'sex' => $row['sex'],
+        'bornyear' => intval($row['bornyear']),
+        'bornmonth' => intval($row['bornmonth']),
+        'bornday' => intval($row['bornday']),
+        'yearofdeath' => intval($row['yearofdeath']),
+        'monthofdeath' => intval($row['monthofdeath']),
+        'dayofdeath' => intval($row['dayofdeath']),
+        'mother' => intval($row['mother']),
+        'father' => intval($row['father']),
+        'private' => $row['private'],
+        'gtline' => intval($row['gtline']),
+        'bornyear_notexactly' => $row['bornyear_notexactly'],
+        'yearofdeath_notexactly' => $row['yearofdeath_notexactly'],
+    );
+}
+
+// replace mother / father id to uid
+
+foreach ($data['persons'] as $k => $v) {
+    $mother = $data['persons'][$k]['mother'];
+    if (isset($persons_by_ids[$mother])) {
+        $data['persons'][$k]['mother'] = $persons_by_ids[$mother];
+    } else {
+        $data['persons'][$k]['mother'] = '';
+    }
+    
+    $father = $data['persons'][$k]['father'];
+    if (isset($persons_by_ids[$father])) {
+        $data['persons'][$k]['father'] = $persons_by_ids[$father];
+    } else {
+        $data['persons'][$k]['father'] = '';
+    }
+}
+
+
+$path_zip = tempnam("tmp", "zip");
+
+$zip = new ZipArchive;
+if ($zip->open($path_zip, ZipArchive::CREATE) === TRUE) {
+    // Add files to the zip file
+    // $zip->addFile('test.txt');
+    // $zip->addFile('test.pdf');
+    // $zip->addFile('random.txt', 'newfile.txt');
+
+    $zip->addFromString('data.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    $zip->close();
+} else {
+    die("Error: Could not created ".$path_zip);
+}
+
+
+if (file_exists($path_zip)) {
+
+    header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
+    header("Cache-Control: public"); // needed for internet explorer
+    header("Content-Type: application/zip");
+    header("Content-Transfer-Encoding: Binary");
+    header("Content-Length:".filesize($path_zip));
+    header("Content-Disposition: attachment; filename=gtree_data.zip");
+    readfile($path_zip);
+    die();        
+} else {
+    die("Error: File not found.");
+} 
