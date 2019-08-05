@@ -18,11 +18,28 @@ if (isset($_POST['do_remove_person'])) {
     }
 }
 
+$filter = '';
+
+if (isset($_GET['filter'])) {
+    $filter = trim($_GET['filter']);
+}
+
 include_once("head.php");
 ?>
 
 <h3>Персоны</h3>
 <a class="btn btn-primary" href="persons_add.php">Добавить персону</a>
+<!-- a class="btn btn-primary" href="persons_export.php">Экспорт списка</a -->
+<hr>
+<form method="GET" action="persons.php" class="form-inline">
+    <div class="form-group mb-2">
+        <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Фильтр:">
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="text" autofocus class="form-control" name="filter" value="<?php echo htmlspecialchars($filter); ?>" id="inputPassword2">
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">Применить фильтр</button>
+</form>
 <br/><br/>
 <table class="table">
     <thead class="thead-dark">
@@ -38,10 +55,56 @@ include_once("head.php");
     <tbody>
   
     <?php
-    
+
     $conn = GTree::dbConn();
-    $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
-    $stmt->execute(array());
+    $filters = array();
+    $values = array();
+    if ($filter != '') {
+        $filters[] = '(fullname LIKE ?)';
+        $values[] = '%'.$filter.'%';
+
+        $filters[] = '(bornlastname LIKE ?)';
+        $values[] = '%'.$filter.'%';
+
+        $filters[] = '(lastname LIKE ?)';
+        $values[] = '%'.$filter.'%';
+
+        $filters[] = '(firstname LIKE ?)';
+        $values[] = '%'.$filter.'%';
+
+        $filters[] = '(secondname LIKE ?)';
+        $values[] = '%'.$filter.'%';
+        if (is_numeric($filter)) {
+            $filter_int = intval($filter);
+            
+            $filters[] = '(bornyear = ?)';
+            $values[] = $filter_int;
+
+            $filters[] = '(id = ?)';
+            $values[] = $filter_int;
+
+            $filters[] = '(father = ?)';
+            $values[] = $filter_int;
+
+            $filters[] = '(mother = ?)';
+            $values[] = $filter_int;
+
+            $filters[] = '(yearofdeath = ?)';
+            $values[] = $filter_int;
+        }
+    }
+
+    if (count($filters) > 0) {
+        $filters = ' WHERE '.implode(' OR ', $filters);
+    } else {
+        $filters = '';
+    }
+    
+    $query = 'SELECT * FROM persons '.$filters.' ORDER BY bornyear';
+    // echo $query;
+    // $filter
+    $stmt = $conn->prepare($query);
+    $stmt->execute($values);
     while ($row = $stmt->fetch()) {
         $personid = $row['id'];
         $mother = $row['mother'];
