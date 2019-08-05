@@ -44,7 +44,7 @@ if (isset($_POST['do_person_add'])) {
         $fullname .= ' ('.$bornlastname.')';
     }
     $fullname .= ' '.$firstname.' '.$secondname;
-
+    $uid = GTree::getRandomString(128);
     $conn = GTree::dbConn();
     $stmt = $conn->prepare('INSERT INTO persons(
             fullname,
@@ -64,12 +64,13 @@ if (isset($_POST['do_person_add'])) {
             `private`,
             gtline,
             bornyear_notexactly,
-            yearofdeath_notexactly
+            yearofdeath_notexactly,
+            uid
         ) VALUES(
             ?,?,?,?,?,
             ?,?,?,?,?,
             ?,?,?,?,?,
-            ?,?,?
+            ?,?,?,?
         );');
     $values = array(
         $fullname,
@@ -90,6 +91,7 @@ if (isset($_POST['do_person_add'])) {
         $gtline,
         $bornyear_notexactly,
         $yearofdeath_notexactly,
+        $uid,
     );
     if (!$stmt->execute($values)) {
         $error = 'Что то пошло не так.';

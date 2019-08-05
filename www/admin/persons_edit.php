@@ -23,6 +23,7 @@ $private = 'no';
 $gtline = 0;
 $bornyear_notexactly = 'no';
 $yearofdeath_notexactly = 'no';
+$uid = '';
 
 $sex = 'male';
 
@@ -50,7 +51,7 @@ if (isset($_GET['personid'])) {
         $gtline = intval($row['gtline']);
         $bornyear_notexactly = $row['bornyear_notexactly'];
         $yearofdeath_notexactly = $row['yearofdeath_notexactly'];
-
+        $uid = $row['uid'];
     } else {
         $error = 'Пeрсона не найдена';
     }
@@ -173,6 +174,10 @@ include_once("head.php");
 <h3>Изменить данные о персоне</h3>
 <form action="persons_edit.php" method="POST">
     <input name="personid" value="<?php echo $personid; ?>" type="hidden"/>
+    <div class="form-group">
+        <label>Уникальный Идентификатор</label>
+        <input class="form-control" readonly name="lastname" value="<?php echo $uid; ?>" type="text"/>
+    </div>
     <div class="form-group">
         <label>Фамилия</label>
         <input class="form-control" name="lastname" value="<?php echo $lastname; ?>" type="text"/>
