@@ -22,7 +22,6 @@ if (isset($_POST['do_person_add'])) {
     $father = intval($_POST['father']);
     $private = $_POST['private'];
     $gtline = $_POST['gtline'];
-    $borndate = $bornday.'-'.$bornmonth.'-'.$bornyear;
     
     $bornyear_notexactly = $_POST['bornyear_notexactly'];
     $yearofdeath_notexactly = $_POST['yearofdeath_notexactly'];
