@@ -9,6 +9,11 @@ include_once("head.php");
 <br>
 <a class="btn btn-danger" href="logout.php">Выйти из под административной учетной записи</a>
 
+<hr>
+<a class="btn btn-primary" target="_blank" href="data_export.php">Экспорт всех данных</a>
+<hr>
+<a class="btn btn-primary" href="data_import.php">Импорт данных (перезапись данных)</a>
+
 <?php
 
 include_once("footer.php");

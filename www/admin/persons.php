@@ -29,8 +29,6 @@ include_once("head.php");
 
 <h3>Персоны</h3>
 <a class="btn btn-primary" href="persons_add.php">Добавить персону</a>
-<a class="btn btn-primary" target="_blank" href="persons_export.php">Экспорт данных</a>
-<a class="btn btn-primary" href="persons_import.php">Импорт данных</a>
 <hr>
 <form method="GET" action="persons.php" class="form-inline">
     <div class="form-group mb-2">

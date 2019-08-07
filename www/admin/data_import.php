@@ -154,7 +154,7 @@ include_once("head.php");
 Есть если не существует записи то она будет создана. <br>
 </div>
 
-<form action="persons_import.php" enctype="multipart/form-data" method="POST">
+<form action="data_import.php" enctype="multipart/form-data" method="POST">
     <div class="form-group">
         <label for="exampleFormControlFile1">Выберите файл для загрузки (zip архив)</label>
         <input type="file" name="gtree_data_zip" class="form-control-file" id="exampleFormControlFile1">
