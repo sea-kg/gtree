@@ -50,6 +50,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="tree_edit.php">Редактор дерева</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="photos.php">Фотографии</a>
+            </li>
         </ul>
         </div>
     </nav>
