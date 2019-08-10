@@ -164,7 +164,45 @@ include_once("head.php");
         
 
         ctx.lineWidth = 1;
+
+        // cards
+        for (var i in gt) {
+          var p = gt[i];
+          // console.log(p);
+          var x1 = gtree_padding + p.tree_x * gtree_gtcol;
+          var y1 = gtree_padding + p.tree_y * gtree_gtline;
+          gt[i].x1 = x1;
+          gt[i].y1 = y1;
+
+          // fill          
+          ctx.fillStyle = selectedCard == i ? "#E6ECDF" : "white";
+          ctx.fillRect(x1, y1, gtree_card_width, gtree_card_height);
+          ctx.fillStyle = "black";
+          var years_print = p.bornyear;
+          if (p.bornyear_notexactly == 'yes') {
+            years_print += '(пр.)';
+          }
+
+          if (p.yearofdeath > 0) {
+            years_print += ' - ' + p.yearofdeath;
+            if (p.yearofdeath_notexactly == 'yes') {
+              years_print += '(пр.)';
+            }
+          }
+
+          ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
+          var d = 16;
+          ctx.fillText('' + years_print, x1 + 3, y1 + d);
+          d += 16;
+          ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
+          if (p.lastname) {
+            d += 16;
+            ctx.fillText('' + p.lastname, x1 + 3, y1 + d);
+          }
+        }
+
         // parents
+        ctx.lineWidth = 2;
         for (var i in gt) {
           var p = gt[i];
           
@@ -220,49 +258,10 @@ include_once("head.php");
             ctx.moveTo(x2, y2);
             ctx.bezierCurveTo(x2, y3, x1, y3, x1, y1);
             ctx.stroke();
-
-            
-
-          }
-        }
-
-        // cards
-        for (var i in gt) {
-          var p = gt[i];
-          // console.log(p);
-          var x1 = gtree_padding + p.tree_x * gtree_gtcol;
-          var y1 = gtree_padding + p.tree_y * gtree_gtline;
-          gt[i].x1 = x1;
-          gt[i].y1 = y1;
-
-          // fill          
-          ctx.fillStyle = selectedCard == i ? "#E6ECDF" : "white";
-          ctx.fillRect(x1, y1, gtree_card_width, gtree_card_height);
-          ctx.fillStyle = "black";
-          var years_print = p.bornyear;
-          if (p.bornyear_notexactly == 'yes') {
-            years_print += '(пр.)';
-          }
-
-          if (p.yearofdeath > 0) {
-            years_print += ' - ' + p.yearofdeath;
-            if (p.yearofdeath_notexactly == 'yes') {
-              years_print += '(пр.)';
-            }
-          }
-
-          ctx.strokeRect(x1, y1, gtree_card_width, gtree_card_height);
-          var d = 16;
-          ctx.fillText('' + years_print, x1 + 3, y1 + d);
-          d += 16;
-          ctx.fillText('' + p.firstname, x1 + 3, y1 + d);
-          if (p.lastname) {
-            d += 16;
-            ctx.fillText('' + p.lastname, x1 + 3, y1 + d);
           }
         }
       }
-      
+     
       var selectedCard = -1;
       var movingEnable = false;
 
