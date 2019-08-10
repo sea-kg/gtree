@@ -51,6 +51,9 @@
                 <a class="nav-link" href="tree_edit.php">Редактор дерева</a>
             </li>
             <li class="nav-item active">
+                <a class="nav-link" href="tree_edit2.php">Редактор дерева 2</a>
+            </li>
+            <li class="nav-item active">
                 <a class="nav-link" href="photos.php">Фотографии</a>
             </li>
         </ul>

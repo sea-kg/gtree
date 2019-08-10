@@ -29,6 +29,7 @@ class GTree {
 	static $gtree_yearstep = 16;
 	static $gtree_card_width = 159;
 	static $gtree_card_height = 62;
+	static $gtree_gtcol = 170;
 	static $gtree_gtline = 86;
 	static $gtree_gtline_top = 50;
 
