@@ -9,6 +9,10 @@
     <script src="./js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <style>
+body {
+  height: 100%;
+}
+  
 .genealogical-tree {
     position: fixed;
     border: 1px solid black;
@@ -16,6 +20,15 @@
     width: calc(100% - 20px);
     height: calc(100% - 60px);
     overflow: scroll;
+}
+
+.gtree-container {
+    border: 1px solid black;
+    height: calc(100% - 180px);
+    overflow: scroll;
+    left: 10px;
+    width: calc(100% - 20px);
+    position: fixed;
 }
     </style>
 
