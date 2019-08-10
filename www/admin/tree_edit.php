@@ -80,9 +80,10 @@ include_once("head.php");
         
         echo 'var gt = '.json_encode($persons, JSON_PRETTY_PRINT)."; \r\n";
     ?>
-      
+      var max_gtline = 0;
       for (var i in gt) {
         gt[i].highlight = false;
+        max_gtline = Math.max(gt[i].gtline, max_gtline);
       }
 
       function calcX_in_px(year) {
@@ -90,6 +91,10 @@ include_once("head.php");
         ret = ret * gtree_yearstep + gtree_padding;
         return ret;
       }
+      
+      gtree_height += gtree_gtline;
+
+      
 
       var canvas = document.getElementById("gtree");
       var ctx = canvas.getContext("2d");
@@ -100,6 +105,17 @@ include_once("head.php");
 
 
       function update_gtree() {
+        var new_max_gtline = 0;
+        for (var i in gt) {
+          gt[i].highlight = false;
+          new_max_gtline = Math.max(gt[i].gtline, new_max_gtline);
+        }
+        if (new_max_gtline != max_gtline) {
+          max_gtline = new_max_gtline;
+          gtree_height = (max_gtline + 1) * gtree_gtline + 2 * gtree_padding + 100;
+          canvas.height = gtree_height;
+          canvas.style.height = gtree_height + 'px';
+        }
 
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, gtree_width, gtree_height);
