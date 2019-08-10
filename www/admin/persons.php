@@ -2,6 +2,7 @@
 
 $dir_persons = dirname(__FILE__);
 include_once($dir_persons."/../gtree.php");
+include_once($dir_persons."/../gtree_image.php");
 GTree::startAdminPage();
 
 if (isset($_POST['do_remove_person'])) {
@@ -12,7 +13,8 @@ if (isset($_POST['do_remove_person'])) {
     if (!$stmt->execute(array($personid))) {
         $error = 'Что то пошло не так.';
     } else {
-        GTLog::info('users', '[admin#'.GTree::$USERID.'] removed [person#'.$personid.']');
+        GTLog::info('persons', '[admin#'.GTree::$USERID.'] removed [person#'.$personid.']');
+        GTreeImage::generate();
         header('Location: ./persons.php');
 		exit;
     }

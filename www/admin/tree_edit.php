@@ -2,6 +2,7 @@
 
 $dir_persons = dirname(__FILE__);
 include_once($dir_persons."/../gtree.php");
+include_once($dir_persons."/../gtree_image.php");
 GTree::startAdminPage();
 
 if (isset($_POST['update_gtlines_in_tree'])) {
@@ -15,6 +16,7 @@ if (isset($_POST['update_gtlines_in_tree'])) {
       intval($r['id']),
     ));
   }
+  GTreeImage::generate();
   echo "OK";
   return;
 }

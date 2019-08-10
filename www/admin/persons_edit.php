@@ -1,7 +1,8 @@
 <?php
 
-$dir_users = dirname(__FILE__);
-include_once($dir_users."/../gtree.php");
+$dir_persons = dirname(__FILE__);
+include_once($dir_persons."/../gtree.php");
+include_once($dir_persons."/../gtree_image.php");
 GTree::startAdminPage();
 
 $error = '';
@@ -144,7 +145,8 @@ if (isset($_POST['do_person_update'])) {
         $error = 'Что то пошло не так.';
         error_log(print_r($stmt->errorInfo(), true));
     } else {
-        GTLog::info('loggined', '[admin#'.GTree::$USERID.'] update [person#'.$personid.']');
+        GTLog::info('persons', '[admin#'.GTree::$USERID.'] update [person#'.$personid.']');
+        GTreeImage::generate();
         header('Location: ./persons.php');
 		exit;
     }

@@ -46,8 +46,8 @@ class GTreeImage {
         $gtree_height = GTree::calculateHeight($gtree_maxgtline);
         
         $curdir_gtimg = dirname(__FILE__);
-        // $font = $curdir_gtimg.'/font/Dutch801 Rm Win95BT.ttf';
-        $font = $curdir_gtimg.'/font/17255.ttf';
+        $font = $curdir_gtimg.'/font/Dutch801 Rm Win95BT.ttf';
+        // $font = $curdir_gtimg.'/font/17255.ttf';
         
         $my_img = imagecreate( $gtree_width, $gtree_height );
         $background = imagecolorallocate( $my_img, 255, 255, 255 );
@@ -55,9 +55,9 @@ class GTreeImage {
         $line_color = imagecolorallocate( $my_img, 89, 89, 89 );
         imagecolortransparent($my_img, $background);
 
-        $female_card = imagecreatefrompng('images/female_card.png');
-        $male_card = imagecreatefrompng('images/male_card.png');
-
+        $female_card = imagecreatefrompng($curdir_gtimg.'/images/female_card.png');
+        $male_card = imagecreatefrompng($curdir_gtimg.'/images/male_card.png');
+        
         imagesetthickness ( $my_img, 3 );
         imageline( $my_img,
             GTree::$gtree_padding, GTree::$gtree_padding + 25,
@@ -171,7 +171,7 @@ class GTreeImage {
 
 
         header( "Content-type: image/png" );
-        imagepng( $my_img );
+        imagepng( $my_img, $curdir_gtimg.'/public/tree.png');
         imagecolordeallocate($my_img, $text_color );
         imagecolordeallocate($my_img, $line_color );
         imagecolordeallocate($my_img, $background );
@@ -180,6 +180,6 @@ class GTreeImage {
 }
 
 
-GTreeImage::generate();
+// GTreeImage::generate();
 
 

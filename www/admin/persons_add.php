@@ -1,7 +1,8 @@
 <?php
 
-$dir_users = dirname(__FILE__);
-include_once($dir_users."/../gtree.php");
+$dir_persons = dirname(__FILE__);
+include_once($dir_persons."/../gtree.php");
+include_once($dir_persons."/../gtree_image.php");
 GTree::startAdminPage();
 
 $error = '';
@@ -97,7 +98,8 @@ if (isset($_POST['do_person_add'])) {
         error_log(print_r($stmt->errorInfo(), true));
     } else {
         $newpersonid = $conn->lastInsertId();
-        GTLog::info('loggined', '[admin#'.GTree::$USERID.'] added new [person#'.$newpersonid.']');
+        GTLog::info('persons', '[admin#'.GTree::$USERID.'] added new [person#'.$newpersonid.']');
+        GTreeImage::generate();
         header('Location: ./persons.php');
 		exit;
     }
