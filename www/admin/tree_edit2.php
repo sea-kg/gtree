@@ -37,22 +37,22 @@ include_once("head.php");
         $conn = GTree::dbConn();
         $persons = array();
         $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear');
-        $minyear = 5000;
-        $maxyear = 0;
         $stmt->execute(array());
         while ($row = $stmt->fetch()) {
           if ($row['bornyear'] == 0) {
             continue;
           }
-          
-          $minyear = $row['bornyear'] < $minyear ? $row['bornyear'] : $minyear;
-          $maxyear = $row['bornyear'] > $maxyear ? $row['bornyear'] : $maxyear;
 
           $personid = intval($row['id']);
           $lastname = $row['lastname'];
           if ($row['bornlastname'] != '') {
             $lastname = $row['bornlastname'];
           }
+
+          $tree_x = intval($row['tree_x']);
+          $tree_y = intval($row['tree_y']);
+          if ($tree_x < 0) $tree_x = 0;
+          if ($tree_y < 0) $tree_y = 0;
 
           $persons[$personid] = array(
             'firstname' => $row['firstname'],
@@ -65,8 +65,8 @@ include_once("head.php");
             'mother' => intval($row['mother']),
             'father' => intval($row['father']),
             'gtline' => intval($row['gtline']),
-            'tree_x' => intval($row['tree_x']),
-            'tree_y' => intval($row['tree_y']),
+            'tree_x' => $tree_x,
+            'tree_y' => $tree_y,
           );
         }
 
@@ -202,7 +202,7 @@ include_once("head.php");
         }
 
         // parents
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         for (var i in gt) {
           var p = gt[i];
           
@@ -226,8 +226,17 @@ include_once("head.php");
             x1 += gtree_card_width / 2;
 
             var x2 = (mo_x1 + fa_x1) / 2;
-            var y2 = Math.max(fa_y1, mo_y1) + gtree_card_width / 3;
+            // var y2 = Math.max(fa_y1, mo_y1) + gtree_card_width / 3;
+            var y2 = Math.max(fa_y1, mo_y1) + 30;
             var y3 = y2 + 20;
+
+            ctx.beginPath();
+            ctx.arc(mo_x1, mo_y1, 6, 0, Math.PI);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(fa_x1, fa_y1, 6, 0, Math.PI);
+            ctx.fill();
 
             ctx.beginPath();
             ctx.moveTo(mo_x1, mo_y1);
@@ -235,6 +244,9 @@ include_once("head.php");
             ctx.lineTo(fa_x1, y2);
             ctx.lineTo(fa_x1, fa_y1);
             ctx.stroke();
+            
+            ctx.fillRect(x2-3, y2-3, 6, 6);
+            ctx.fillRect(x2-3, y3-3, 6, 6);
 
             ctx.beginPath();
             ctx.moveTo(x2, y2);
@@ -242,6 +254,14 @@ include_once("head.php");
             ctx.lineTo(x1, y3);
             ctx.lineTo(x1, y1);
             ctx.stroke();
+
+            // arrow
+            ctx.beginPath();
+            ctx.moveTo(x1-6, y1-12);
+            ctx.lineTo(x1+6, y1-12);
+            ctx.lineTo(x1, y1);
+            ctx.lineTo(x1-6, y1-12);
+            ctx.fill();
             
           }
         }
