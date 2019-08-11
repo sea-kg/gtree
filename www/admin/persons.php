@@ -47,19 +47,7 @@ include_once("head.php");
     <button type="submit" class="btn btn-primary mb-2">Применить фильтр</button>
 </form>
 <br/><br/>
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th>#</th>
-            <th>Годы жизни</th>
-            <th>ФИО</th>
-            <th>Отец</th>
-            <th>Мать</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-  
+ 
     <?php
 
     $conn = GTree::dbConn();
@@ -138,23 +126,28 @@ include_once("head.php");
         }
 
         echo '
-        <tr>
-            <td>#'.$personid.'</td>
-            <td>'.$row['bornyear'].$bornyear_notexactly.' - '.$row['yearofdeath'].$yearofdeath_notexactly.' </td>
-            <td>
-                <a class="btn btn-primary" href="persons_edit.php?personid='.$personid.'"><i class="fas fa-user-edit"></i></a>
-                '.$row['fullname'].'
-            </td>
-            <td>'.$father.'</td>
-            <td>'.$mother.'</td>
-            <td><div class="btn btn-danger do-remove-person" personid="'.$personid.'"><i class="fas fa-trash-alt"></i></div></td>
-        </tr>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">[person#'.$personid.'] <strong>'.$row['fullname'].'</strong></h5>
+                <h6 class="card-subtitle mb-2 text-muted">Годы жизни: '.$row['bornyear'].$bornyear_notexactly.' - '.$row['yearofdeath'].$yearofdeath_notexactly.'</h6>
+                <p class="card-text"><small>Отец: '.$father.'; Мать: '.$mother.'</small></p>
+                <a class="btn btn-primary" 
+                        data-toggle="tooltip" data-placement="bottom" title="Редактировать"
+                        href="persons_edit.php?personid='.$personid.'"><i class="fas fa-user-edit"></i></a>
+
+                    <a class="btn btn-primary" 
+                        data-toggle="tooltip" data-placement="bottom" title="Биография"
+                        href="иiography.php?personid='.$personid.'"><i class="fas fa-file-contract"></i></a>
+
+                    <div class="btn btn-danger do-remove-person" 
+                        data-toggle="tooltip" data-placement="bottom" title="Удалить"
+                        personid="'.$personid.'"><i class="fas fa-trash-alt"></i></div>
+                
+            </div>
+        </div><br>
         ';
     }
 ?>
-    </tbody>
-</table>
-
 
 <!-- Select Person -->
 
@@ -210,6 +203,10 @@ include_once("head.php");
             show: true
         });
     })
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 </script>
 
 <?php
