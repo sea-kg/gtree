@@ -36,6 +36,8 @@ while ($row = $stmt->fetch()) {
         'father' => intval($row['father']),
         'private' => $row['private'],
         'gtline' => intval($row['gtline']),
+        'tree_x' => intval($row['tree_x']),
+        'tree_y' => intval($row['tree_y']),
         'bornyear_notexactly' => $row['bornyear_notexactly'],
         'yearofdeath_notexactly' => $row['yearofdeath_notexactly'],
     );

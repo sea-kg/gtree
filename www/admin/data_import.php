@@ -28,6 +28,8 @@ function update_or_insert($p) {
     $values[] = 0;
     $values[] = $p['private'];
     $values[] = $p['gtline'];
+    $values[] = isset($p['tree_x']) ? intval($p['tree_x']) : 0;
+    $values[] = isset($p['tree_y']) ? intval($p['tree_y']) : 0;
     $values[] = $p['bornyear_notexactly'];
     $values[] = $p['yearofdeath_notexactly'];
     $values[] = $p['uid'];
@@ -51,6 +53,8 @@ function update_or_insert($p) {
             father = ?,
             `private` = ?,
             gtline = ?,
+            tree_x = ?,
+            tree_y = ?,
             bornyear_notexactly = ?,
             yearofdeath_notexactly = ?
         WHERE 
@@ -74,6 +78,8 @@ function update_or_insert($p) {
             father,
             `private`,
             gtline,
+            tree_x,
+            tree_y,
             bornyear_notexactly,
             yearofdeath_notexactly,
             uid
@@ -81,7 +87,8 @@ function update_or_insert($p) {
             ?,?,?,?,?,
             ?,?,?,?,?,
             ?,?,?,?,?,
-            ?,?,?,?
+            ?,?,?,?,?,
+            ?
         );";
     }
     $stmt2 = $conn->prepare($query);
