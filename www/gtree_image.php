@@ -86,11 +86,16 @@ class GTreeImage {
         $el_r = 6;
         // parents
         foreach ($gt as $id => $p) {
-          
-          if ($p['mother'] > 0 && $p['father'] > 0) {
-                $mo = $gt[$p['mother']];
-                $fa = $gt[$p['father']];
+            $mother = $p['mother'];
+            $father = $p['father'];
+            if ($mother > 0 && $father > 0) {
                 
+                $mo = isset($gt[$mother]) ? $gt[$mother] : null;
+                $fa = isset($gt[$father]) ? $gt[$father] : null;
+                
+                if ($mo == null || $fa == null) {
+                    continue;
+                }
                 $mo_x1 = GTree::calcX_in_px($gtree_minyear, $mo['bornyear']);
                 $mo_y1 = GTree::$gtree_gtline_top + $mo['gtline'] * GTree::$gtree_gtline;
 
@@ -170,7 +175,7 @@ class GTreeImage {
         }
 
 
-        header( "Content-type: image/png" );
+        // header( "Content-type: image/png" );
         imagepng( $my_img, $curdir_gtimg.'/public/tree.png');
         imagecolordeallocate($my_img, $text_color );
         imagecolordeallocate($my_img, $line_color );
@@ -178,8 +183,5 @@ class GTreeImage {
         imagedestroy( $my_img );
     }
 }
-
-
-// GTreeImage::generate();
 
 

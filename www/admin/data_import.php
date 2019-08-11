@@ -1,7 +1,8 @@
 <?php
 
-$dir_users = dirname(__FILE__);
-include_once($dir_users."/../gtree.php");
+$dir_data_import = dirname(__FILE__);
+include_once($dir_data_import."/../gtree.php");
+include_once($dir_data_import."/../gtree_image.php");
 GTree::startAdminPage();
 
 $error = '';
@@ -144,7 +145,8 @@ if (isset($_POST['do_persons_import'])) {
             update_or_insert($p);
             update_parents($p);
         }
-
+        GTreeImage::generate();
+        header('Location: ');
     } else {
         $error = 'ошибка';
     }

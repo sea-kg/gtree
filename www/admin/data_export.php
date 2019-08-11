@@ -1,8 +1,10 @@
 <?php
 
-$dir_persons = dirname(__FILE__);
-include_once($dir_persons."/../gtree.php");
+$dir_data_export = dirname(__FILE__);
+include_once($dir_data_export."/../gtree.php");
 GTree::startAdminPage();
+
+date_default_timezone_set('UTC');
 
 $data = array();
 $data['persons'] = array();
@@ -48,14 +50,14 @@ while ($row = $stmt->fetch()) {
 foreach ($data['persons'] as $k => $v) {
     $mother = $data['persons'][$k]['mother'];
     if (isset($persons_by_ids[$mother])) {
-        $data['persons'][$k]['mother'] = $persons_by_ids[$mother];
+        $data['persons'][$k]['mother'] = isset($persons_by_ids[$mother]) ? $persons_by_ids[$mother] : '';
     } else {
         $data['persons'][$k]['mother'] = '';
     }
     
     $father = $data['persons'][$k]['father'];
     if (isset($persons_by_ids[$father])) {
-        $data['persons'][$k]['father'] = $persons_by_ids[$father];
+        $data['persons'][$k]['father'] = isset($persons_by_ids[$father]) ? $persons_by_ids[$father] : '';
     } else {
         $data['persons'][$k]['father'] = '';
     }
@@ -72,6 +74,9 @@ if ($zip->open($path_zip, ZipArchive::CREATE) === TRUE) {
     // $zip->addFile('random.txt', 'newfile.txt');
 
     $zip->addFromString('data.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    if (file_exists($dir_data_export.'/../public/tree.png')) {
+        $zip->addFile($dir_data_export.'/../public/tree.png', 'tree.png');
+    }
     $zip->close();
 } else {
     die("Error: Could not created ".$path_zip);
@@ -79,13 +84,14 @@ if ($zip->open($path_zip, ZipArchive::CREATE) === TRUE) {
 
 
 if (file_exists($path_zip)) {
+    $dt = date("Y-m-d_His");
 
     header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
     header("Cache-Control: public"); // needed for internet explorer
     header("Content-Type: application/zip");
     header("Content-Transfer-Encoding: Binary");
     header("Content-Length:".filesize($path_zip));
-    header("Content-Disposition: attachment; filename=gtree_data.zip");
+    header('Content-Disposition: attachment; filename=gtree_data_'.$dt.'.zip');
     readfile($path_zip);
     die();        
 } else {
