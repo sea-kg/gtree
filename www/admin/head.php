@@ -12,11 +12,11 @@
     
     <link rel="icon" href="favicon.ico">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/simplemde.min.css?v=2">
+    <link rel="stylesheet" href="../css/all.min.css">
+    
 
     <script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="../js/popper.min.js"></script>
-    <script type="text/javascript" src="../js/simplemde.min.js"></script>
     <script type="text/javascript" src="../js/bootstrap.min.js"></script>
     <style>
 .genealogical-tree {
