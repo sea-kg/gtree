@@ -140,6 +140,24 @@ if (isset($_POST['do_biography_update'])) {
     }
 }
 
+$brothers_and_sisters_list = array();
+
+$conn = GTree::dbConn();
+$stmt = $conn->prepare('SELECT * FROM persons WHERE (father = ? AND father <> 0) OR (mother = ? AND mother <> 0)');
+$stmt->execute(array($father, $father));
+while ($row = $stmt->fetch()) {
+    if ($row['id'] == $personid) {
+        continue;
+    }
+    $caption = '('.$row['bornyear'].') '.$row['fullname'];
+    $brothers_and_sisters_list[] = array(
+        'id' => $row['id'],
+        'sex' => $row['sex'],
+        'caption' => $caption,
+    );
+}
+
+
 $children_list = array();
 
 $query_childrens = '';
@@ -202,16 +220,20 @@ include_once("head.php");
 
         <?php
             foreach ($children_list as $k => $v) {
-                if ($v['sex'] == 'male') {
-                    echo 'Сын: <a href="biographies.php?personid='.$v['id'].'" class="btn btn-link">'.$v['caption'].'</a><br>';
-                }
-
-                if ($v['sex'] == 'female') {
-                    echo 'Дочь: <a href="biographies.php?personid='.$v['id'].'" class="btn btn-link">'.$v['caption'].'</a><br>';
-                }
-                
+                $relation = $v['sex'] == 'male' ? 'Сын' : '';
+                $relation = $v['sex'] == 'female' ? 'Дочь' : $relation;
+                echo $relation.': <a href="biographies.php?personid='.$v['id'].'" class="btn btn-link">'.$v['caption'].'</a><br>';
             }
         ?>
+
+        <?php
+            foreach ($brothers_and_sisters_list as $k => $v) {
+                $relation = $v['sex'] == 'male' ? 'Брат' : '';
+                $relation = $v['sex'] == 'female' ? 'Сестра' : $relation;
+                echo $relation.': <a href="biographies.php?personid='.$v['id'].'" class="btn btn-link">'.$v['caption'].'</a><br>';
+            }
+        ?>
+
     </div>
 </div><br>
 
