@@ -13,6 +13,11 @@ if (isset($_POST['do_remove_person'])) {
     if (!$stmt->execute(array($personid))) {
         $error = 'Что то пошло не так.';
     } else {
+        $stmt2 = $conn->prepare('UPDATE persons SET mother = 0 WHERE mother = ?;');
+        $stmt2->execute(array($personid));
+        $stmt3 = $conn->prepare('UPDATE persons SET father = 0 WHERE father = ?;');
+        $stmt3->execute(array($personid));
+
         GTLog::info('persons', '[admin#'.GTree::$USERID.'] removed [person#'.$personid.']');
         GTreeImage::generate();
         header('Location: ./persons.php');
