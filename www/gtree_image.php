@@ -42,8 +42,8 @@ class GTreeImage {
 
         $gtree_maxyear = GTree::getMaxBornYear();
         $gtree_minyear = GTree::getMinBornYear();
-        $gtree_width = GTree::calculateWidth($gtree_maxgtline);
-        $gtree_height = GTree::calculateHeight($gtree_maxgtline);
+        $gtree_width = GTree::calculateWidth();
+        $gtree_height = GTree::calculateHeight();
         
         $curdir_gtimg = dirname(__FILE__);
         $font = $curdir_gtimg.'/font/Dutch801 Rm Win95BT.ttf';
