@@ -137,7 +137,7 @@ include_once("head.php");
 
                     <a class="btn btn-primary" 
                         data-toggle="tooltip" data-placement="bottom" title="Биография"
-                        href="иiography.php?personid='.$personid.'"><i class="fas fa-file-contract"></i></a>
+                        href="biographies.php?personid='.$personid.'"><i class="fas fa-file-contract"></i></a>
 
                     <div class="btn btn-danger do-remove-person" 
                         data-toggle="tooltip" data-placement="bottom" title="Удалить"
