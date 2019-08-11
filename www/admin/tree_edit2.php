@@ -229,35 +229,20 @@ include_once("head.php");
             var y2 = Math.max(fa_y1, mo_y1) + gtree_card_width / 3;
             var y3 = y2 + 20;
 
-            /*ctx.beginPath();
+            ctx.beginPath();
             ctx.moveTo(mo_x1, mo_y1);
             ctx.lineTo(mo_x1, y2);
             ctx.lineTo(fa_x1, y2);
             ctx.lineTo(fa_x1, fa_y1);
-            ctx.stroke();*/
-
-            ctx.beginPath();
-            ctx.moveTo(mo_x1, mo_y1);
-            ctx.bezierCurveTo(mo_x1, y2, x2, mo_y1, x2, y2);
             ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(fa_x1, fa_y1);
-            ctx.bezierCurveTo(fa_x1, y2, x2, fa_y1, x2, y2);
-            ctx.stroke();
-
-            /*
             ctx.beginPath();
             ctx.moveTo(x2, y2);
             ctx.lineTo(x2, y3);
             ctx.lineTo(x1, y3);
             ctx.lineTo(x1, y1);
             ctx.stroke();
-            */
-            ctx.beginPath();
-            ctx.moveTo(x2, y2);
-            ctx.bezierCurveTo(x2, y3, x1, y3, x1, y1);
-            ctx.stroke();
+            
           }
         }
       }
