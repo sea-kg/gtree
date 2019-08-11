@@ -316,6 +316,7 @@ include_once("head.php");
                 echo $persons_list_female;
             ?>
         </select>
+        <!-- button type="button" class="btn btn-primary" id="selectMotherBtn">Выборать из списка</button -->
     </div>
 
     <div class="form-group">
@@ -347,5 +348,42 @@ include_once("head.php");
     }
     ?>
 </form>
+
+<!-- Large modal -->
+
+<div class="modal fade bd-example-modal-lg" id="modalSelectMother" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <!-- Заголовок модального окна -->
+      <div class="modal-header">
+        <h4 class="modal-title">Заголовок модального окна</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <!-- Основное содержимое модального окна -->
+      <div class="modal-body">
+        Содержимое модального окна...
+      </div>
+      <!-- Футер модального окна -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary">Сохранить изменения</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#selectMotherBtn').unbind().bind('click', function() {
+    $('#modalSelectMother').modal({
+        backdrop: true,
+        keyboard: true,
+        focus: true,
+        show: true
+    })
+
+})
+
+</script>
+
 
 <?php include_once("footer.php");
