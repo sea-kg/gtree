@@ -55,8 +55,7 @@ class GTreeImage {
         $line_color = imagecolorallocate( $my_img, 89, 89, 89 );
         imagecolortransparent($my_img, $background);
 
-        $female_card = imagecreatefrompng($curdir_gtimg.'/images/female_card.png');
-        $male_card = imagecreatefrompng($curdir_gtimg.'/images/male_card.png');
+        $person_card = imagecreatefrompng($curdir_gtimg.'/images/person_card.png');
         
         imagesetthickness ( $my_img, 3 );
         imageline( $my_img,
@@ -143,11 +142,7 @@ class GTreeImage {
             imagefilledrectangle($my_img, $x1+1, $y1+1, $x2-1, $y2-1, $background);
 
             // imagecopymerge ( resource $dst_im , resource $src_im , int $dst_x , int $dst_y , int $src_x , int $src_y , int $src_w , int $src_h , int $pct ) : bool
-            if ($p['sex'] == 'male') {
-                imagecopy($my_img, $male_card, $x1, $y1-10, 0, 0, imagesx($male_card), imagesy($male_card));
-            } else if ($p['sex'] == 'female') {
-                imagecopy($my_img, $female_card, $x1, $y1-10, 0, 0, imagesx($female_card), imagesy($female_card));
-            }
+            imagecopy($my_img, $person_card, $x1, $y1-10, 0, 0, imagesx($person_card), imagesy($person_card));
 
             $years_print = ''.$p['bornyear'];
             if ($p['bornyear_notexactly'] == 'yes') {
