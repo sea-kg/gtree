@@ -22,7 +22,7 @@ if (isset($_POST['do_person_add'])) {
     $mother = intval($_POST['mother']);
     $father = intval($_POST['father']);
     $private = $_POST['private'];
-    $gtline = $_POST['gtline'];
+    $gtline = 0;
     
     $bornyear_notexactly = $_POST['bornyear_notexactly'];
     $yearofdeath_notexactly = $_POST['yearofdeath_notexactly'];
@@ -105,48 +105,77 @@ if (isset($_POST['do_person_add'])) {
     }
 }
 
-$persons_list_male = '';
-$persons_list_female = '';
+$persons_list = array();
 
 $conn = GTree::dbConn();
 $stmt = $conn->prepare('SELECT * FROM persons ORDER BY bornyear;');
 $stmt->execute(array());
 while ($row = $stmt->fetch()) {
-    if ($row['sex'] == 'male') {
-        $persons_list_male .= '<option value="'.$row['id'].'">('.$row['bornyear'].') '.$row['fullname'].'</option>';
-    }
-
-    if ($row['sex'] == 'female') {
-        $persons_list_female .= '<option value="'.$row['id'].'">('.$row['bornyear'].') '.$row['fullname'].'</option>';
-    }
+    $caption = '('.$row['bornyear'].') '.$row['fullname'];
+    $persons_list[] = array(
+        'id' => $row['id'],
+        'sex' => $row['sex'],
+        'caption' => $caption,
+    );
 }
 
 include_once("head.php");
 ?>
+<br>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="persons.php">Персоны</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Добавить новую персону</li>
+  </ol>
+</nav>
 
-<h3>Добавить новую персону</h3>
 <form action="persons_add.php" method="POST">
-    <div class="form-group">
-        <label>Фамилия</label>
-        <input class="form-control" name="lastname" type="text"/>
+    <?php 
+        if ($error != '') {
+            echo '<div class="alert alert-danger" style="margin-top: 20px">'.$error.'</div>';
+        }
+    ?>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Фамилия</label>
+                <input class="form-control" name="lastname" type="text"/>            
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <label for="password">Пол</label>
+            <select class="form-control" id="sex" name="sex">
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
+        </div>
+        <div class="col-sm-4" id="bornlastname_form" style="display: none">
+            <label>Фамилия при рождении</label>
+            <input class="form-control" name="bornlastname" type="text"/>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Фамилия при рождении</label>
-        <input class="form-control" name="bornlastname" type="text"/>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Имя</label>
+                <input class="form-control" name="firstname" type="text"/>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="password">Отчество</label>
+                <input class="form-control" name="secondname" type="text"/>
+            </div>
+        </div>
     </div>
+    
     <div class="form-group">
-        <label>Имя</label>
-        <input class="form-control" name="firstname" type="text"/>
-    </div>
-    <div class="form-group">
-        <label for="password">Отчество</label>
-        <input class="form-control" name="secondname" type="text"/>
-    </div>
-    <div class="form-group">
-        <label for="password">Пол</label>
-        <select class="form-control" name="sex">
-            <option value="male">Мужской</option>
-            <option value="female">Женский</option>
+        <label for="password">Приватные данные</label>
+        <select class="form-control" name="private">
+            <option value="no">Нет</option>    
+            <option value="yes">Да</option>
         </select>
     </div>
     <hr>
@@ -255,43 +284,154 @@ include_once("head.php");
     </div>
     
     <div class="form-group">
-        <label for="password">Мать</label>
-        <select class="form-control" name="mother">
-            <?php
-                echo '<option value="0">-</option>';
-                echo $persons_list_female;
-            ?>
-        </select>
+        <div class="row">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label>Мать</label>
+                    <input type="hidden" readonly id="motherId" name="mother" value="0"/>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" readonly 
+                            name="mother_fullname"
+                            id="motherFullname"
+                            value="-"
+                            aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="selectMotherBtn" type="button">...</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label>Отец</label>
+                    <input type="hidden" readonly id="fatherId" name="father" value="0"/>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" readonly 
+                            name="father_fullname"
+                            id="fatherFullname"
+                            value="-"
+                            aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" id="selectFatherBtn" type="button">...</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="password">Отец</label>
-        <select class="form-control" name="father">
-            <?php 
-                echo '<option value="0">-</option>';
-                echo $persons_list_male;
-            ?>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="password">Приватные данные</label>
-        <select class="form-control" name="private">
-            <option value="no">Нет</option>    
-            <option value="yes">Да</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="password">Строка в дереве</label>
-        <input type="number" class="form-control" name="gtline" value="0"/>
-    </div>
-
     <button class="btn btn-primary" name="do_person_add" >Добавить</button>
-    <?php 
-    if ($error != '') {
-        echo '<div class="alert alert-danger" style="margin-top: 20px">'.$error.'</div>';
-    }
-    ?>
+    
 </form>
+
+
+<!-- Select Person -->
+
+<div class="modal fade bd-example-modal-lg" id="modalSelectPerson" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Выбрать персону</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      </div>
+      <div class="modal-body">
+        <input class="form-control" name="search" id="searchPersonsInAList" value="" placeholder="Быстрый поиск..." type="text"/>
+        <br/>
+        <select class="custom-select" id="selectPersonsList" size="10">
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+        <button type="button" id="selectPersonBtnFinish" class="btn btn-primary">Выбрать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('#sex').unbind().bind('change', function() {
+    var el = $('#sex').children("option:selected");
+    if (el.val() == 'male') {
+        $('#bornlastname_form').hide();
+    } else {
+        $('#bornlastname_form').show();
+    }
+})
+
+<?php 
+    echo 'var persons_list = '.json_encode($persons_list).';';
+?>
+
+
+function updatePersonsList(search) {
+    search = search.toLowerCase();
+    var els = $('#selectPersonsList option');
+    for (var i = 0; i < els.length; i++) {
+        var el = $(els[i]);
+        var text = el.html().toLowerCase();
+        if (text.indexOf(search) != -1) {
+            el.css({'display': ''});
+        } else {
+            el.css({'display': 'none'});
+        }
+        // text.
+        // console.log();
+    }
+}
+
+
+function showPersonsList(sex, current_id, callback_done) {
+    $('#modalSelectPerson').unbind().on('shown.bs.modal', function() {
+        $('#selectPersonsList').html('');
+        $('#selectPersonsList').append('<option ' + (current_id == 0 ? 'selected' : '' )  + ' value="0">-</option>');
+        
+        for (var i in persons_list) {
+            if (persons_list[i].sex == sex) {
+                var selected_opt = '';
+                if (persons_list[i].id == current_id) {
+                    selected_opt = ' selected ';
+                }
+                $('#selectPersonsList').append('<option ' + selected_opt + ' value="' + persons_list[i].id + '">' + persons_list[i].caption + '</option>')
+            }
+        }
+
+        $("#searchPersonsInAList").val('');
+        updatePersonsList('');
+        console.log('shown.bs.modal');
+        $("#searchPersonsInAList").unbind().bind('keyup', function() { 
+            updatePersonsList($(this).val());
+        });
+
+        $('#selectPersonBtnFinish').unbind().bind('click', function() {
+            var el = $('#selectPersonsList').children("option:selected");
+            callback_done(el.val(), el.html());
+            $('#modalSelectPerson').modal('hide');
+        })
+    })
+
+    $('#modalSelectPerson').modal({
+        backdrop: true,
+        keyboard: true,
+        focus: true,
+        show: true
+    });
+}
+
+$('#selectMotherBtn').unbind().bind('click', function() {
+    var motherId = parseInt($('#motherId').val(),10);
+    showPersonsList('female', motherId, function(new_id, caption) {
+        $('#motherId').val(new_id)
+        $('#motherFullname').val(caption)
+    });
+})
+
+$('#selectFatherBtn').unbind().bind('click', function() {
+    var fatherId = parseInt($('#fatherId').val(),10);
+    showPersonsList('male', fatherId, function(new_id, caption) {
+        $('#fatherId').val(new_id)
+        $('#fatherFullname').val(caption)
+    });
+})
+</script>
 
 <?php include_once("footer.php");

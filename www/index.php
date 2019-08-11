@@ -9,7 +9,7 @@
         <div class="btn btn-primary" style="display: none" id="collapse_gtree">- Уменьшить</div>
         <hr>
         <div class="gtree-container">
-          <img style="width: 100%" src="public/tree.png"/>
+          <img style="width: 100%" src="public/tree.png?v1=11"/>
         </div>
         <hr>
       </div>  
