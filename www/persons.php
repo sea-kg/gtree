@@ -62,7 +62,7 @@
               $title = $row['firstname'];
             } else {
               $title = $row['fullname'];
-              $biography = '<a href="#" class="card-link">Биография</a>';
+              $biography = '<a href="./biography.php?uid='.$row['uid'].'" class="card-link">Биография</a>';
             }
 
             echo '<br><div class="card">
