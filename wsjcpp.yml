@@ -1,7 +1,7 @@
 name: "gtree.git"
 version: "v0.0.1"
-cmake_minimum_required: "3.0"
-cmake_cxx_standard: "11"
+cmake_minimum_required: "3.18"
+cmake_cxx_standard: "14"
 description: "GTree"
 authors:
   - name: "sea5kg"
@@ -24,7 +24,9 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_employees"
   - name: "wsjcpp-yaml"
-    version: "v0.1.1"
+    version: "v0.1.7"
     url: "https://github.com/wsjcpp/wsjcpp-yaml:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_yaml"
+    installation-datetime: "Sat, 11 Jan 2025 08:54:01 GMT"
+

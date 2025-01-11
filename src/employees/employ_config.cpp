@@ -236,8 +236,9 @@ bool EmployConfig::applyConfig() {
     }
 
     WsjcppYaml yamlConfig;
-    if (!yamlConfig.loadFromFile(sConfigFile)) {
-        WsjcppLog::err(TAG, "Could not parse " + sConfigFile);
+    std::string sError;
+    if (!yamlConfig.loadFromFile(sConfigFile, sError)) {
+        WsjcppLog::err(TAG, "Could not parse " + sConfigFile + ", error: " + sError);
         return false;
     }
 
@@ -423,18 +424,18 @@ void EmployConfig::doExtractFilesIfNotExists() {
 
 bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
 
-    m_sGameId = yamlConfig["game"]["id"].getValue();
+    m_sGameId = yamlConfig["game"]["id"].valStr();
     WsjcppLog::info(TAG, "game.id: " + m_sGameId);
-    m_sGameName = yamlConfig["game"]["name"].getValue();
+    m_sGameName = yamlConfig["game"]["name"].valStr();
     WsjcppLog::info(TAG, "game.name: " + m_sGameName);
 
-    m_nFlagTimeliveInMin = std::atoi(yamlConfig["game"]["flag_timelive_in_min"].getValue().c_str());
+    m_nFlagTimeliveInMin = std::atoi(yamlConfig["game"]["flag_timelive_in_min"].valStr().c_str());
     WsjcppLog::info(TAG, "game.flag_timelive_in_min: " + std::to_string(m_nFlagTimeliveInMin));
 
-    m_nBasicCostsStolenFlagInPoints = std::atoi(yamlConfig["game"]["basic_costs_stolen_flag_in_points"].getValue().c_str());
+    m_nBasicCostsStolenFlagInPoints = std::atoi(yamlConfig["game"]["basic_costs_stolen_flag_in_points"].valStr().c_str());
     WsjcppLog::info(TAG, "game.basic_costs_stolen_flag_in_points: " + std::to_string(m_nBasicCostsStolenFlagInPoints));
 
-    m_nCostDefenceFlagInPoints10 = std::atof(yamlConfig["game"]["cost_defence_flag_in_points"].getValue().c_str())*10;
+    m_nCostDefenceFlagInPoints10 = std::atof(yamlConfig["game"]["cost_defence_flag_in_points"].valStr().c_str())*10;
     WsjcppLog::info(TAG, "game.cost_defence_flag_in_points (*10): " + std::to_string(m_nCostDefenceFlagInPoints10));
 
     if (m_nGameStartUTCInSec == 0) {
@@ -486,17 +487,17 @@ bool EmployConfig::applyGameConf(WsjcppYaml &yamlConfig) {
 
 bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 
-    m_nScoreboardPort = std::atoi(yamlConfig["scoreboard"]["port"].getValue().c_str());
+    m_nScoreboardPort = std::atoi(yamlConfig["scoreboard"]["port"].valStr().c_str());
     if (m_nScoreboardPort <= 10 || m_nScoreboardPort > 65536) {
         WsjcppLog::err(TAG, "wrong scoreboard.port (expected value od 11..65535)");
         return false;
     }
     WsjcppLog::info(TAG, "scoreboard.port: " + std::to_string(m_nScoreboardPort));
 
-    m_bScoreboardRandom = yamlConfig["scoreboard"]["random"].getValue() == "yes";
+    m_bScoreboardRandom = yamlConfig["scoreboard"]["random"].valBool();
     WsjcppLog::info(TAG, "scoreboard.random: " + std::string(m_bScoreboardRandom == true ? "yes" : "no"));
 
-    m_sScoreboardHtmlFolder = yamlConfig["scoreboard"]["htmlfolder"].getValue();
+    m_sScoreboardHtmlFolder = yamlConfig["scoreboard"]["htmlfolder"].valStr();
     if (m_sScoreboardHtmlFolder.length() > 0) {
         if (m_sScoreboardHtmlFolder[0] != '/') {
             m_sScoreboardHtmlFolder = m_sWorkDir + "/" + m_sScoreboardHtmlFolder;
@@ -519,27 +520,27 @@ bool EmployConfig::applyScoreboardConf(WsjcppYaml &yamlConfig) {
 bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
     m_vServicesConf.clear();
 
-    WsjcppYamlItem yamlCheckers = yamlConfig["checkers"];
+    WsjcppYamlCursor yamlCheckers = yamlConfig["checkers"];
 
-    if (yamlCheckers.getLength() == 0) {
+    if (yamlCheckers.size() == 0) {
         WsjcppLog::err(TAG, "Checkers does not defined");
         return false;
     }
 
-    for (int i = 0; i < yamlCheckers.getLength(); i++) {
-        WsjcppYamlItem yamlChecker = yamlCheckers[i];
-        std::string sServiceId = yamlChecker["id"].getValue();
+    for (int i = 0; i < yamlCheckers.size(); i++) {
+        WsjcppYamlCursor yamlChecker = yamlCheckers[i];
+        std::string sServiceId = yamlChecker["id"].valStr();
 
 
         // std::string sServiceConfPath = m_sWorkspaceDir + "/checker_" + sServiceId + "/service.conf";
 
-        std::string sServiceName = yamlChecker["service_name"].getValue();
+        std::string sServiceName = yamlChecker["service_name"].valStr();
         WsjcppLog::info(TAG, "service_name = " + sServiceName);
 
-        bool bServiceEnable = yamlChecker["enabled"].getValue() == "yes";
+        bool bServiceEnable = yamlChecker["enabled"].valStr() == "yes";
         WsjcppLog::info(TAG, "enabled = " + std::string(bServiceEnable ? "yes" : "no"));
 
-        std::string sServiceScriptPath = yamlChecker["script_path"].getValue();
+        std::string sServiceScriptPath = yamlChecker["script_path"].valStr();
         WsjcppLog::info(TAG, "script_path = " + sServiceScriptPath);
         std::string sServiceScriptDir = m_sWorkDir + "/checker_" + sServiceId + "/";
         if (!WsjcppCore::dirExists(sServiceScriptDir)) {
@@ -553,7 +554,7 @@ bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
             return false;
         }
 
-        int nServiceScritpWait = std::atoi(yamlChecker["script_wait_in_sec"].getValue().c_str());
+        int nServiceScritpWait = std::atoi(yamlChecker["script_wait_in_sec"].valStr().c_str());
         WsjcppLog::info(TAG, "script_wait_in_sec = " + std::to_string(nServiceScritpWait));
 
         if (nServiceScritpWait < 5) {
@@ -561,7 +562,7 @@ bool EmployConfig::applyCheckersConf(WsjcppYaml &yamlConfig) {
             return false;
         }
 
-        int nServiceSleepBetweenRun = std::atoi(yamlChecker["time_sleep_between_run_scripts_in_sec"].getValue().c_str());
+        int nServiceSleepBetweenRun = std::atoi(yamlChecker["time_sleep_between_run_scripts_in_sec"].valStr().c_str());
         WsjcppLog::info(TAG, "time_sleep_between_run_scripts_in_sec = " + std::to_string(nServiceSleepBetweenRun));
 
         if (nServiceSleepBetweenRun < nServiceScritpWait*3) {
