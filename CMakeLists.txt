@@ -18,7 +18,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src")
 # list (APPEND WSJCPP_INCLUDE_DIRS "src/argument_processors")
 # list (APPEND WSJCPP_INCLUDE_DIRS "src/checker")
 # list (APPEND WSJCPP_INCLUDE_DIRS "src/scoreboard")
-# list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
+list (APPEND WSJCPP_INCLUDE_DIRS "src/employees")
 # list (APPEND WSJCPP_INCLUDE_DIRS "src/store")
 # list (APPEND WSJCPP_INCLUDE_DIRS "src/3rdparty/sqlite3/src")
 
@@ -35,7 +35,7 @@ list (APPEND WSJCPP_INCLUDE_DIRS "src")
 # list (APPEND WSJCPP_SOURCES "./src/employees/employ_team_logos.cpp")
 # list (APPEND WSJCPP_SOURCES "./src/employees/employ_flags.cpp")
 # list (APPEND WSJCPP_SOURCES "./src/employees/employ_scoreboard.cpp")
-# list (APPEND WSJCPP_SOURCES "./src/employees/employ_config.cpp")
+list (APPEND WSJCPP_SOURCES "./src/employees/employ_config.cpp")
 # list (APPEND WSJCPP_SOURCES "./src/employees/employ_database.cpp")
 
 # checker
@@ -62,15 +62,6 @@ list (APPEND WSJCPP_SOURCES "src/main.cpp")
 #     include_directories( ${ZLIB_INCLUDE_DIRS} )
 #     list (APPEND WSJCPP_LIBRARIES ${ZLIB_LIBRARIES})
 # endif( ZLIB_FOUND )
-
-# # CURL
-FIND_PACKAGE(CURL)
-IF(CURL_FOUND)
-  list (APPEND WSJCPP_INCLUDE_DIRS ${CURL_INCLUDE_DIR})
-  list (APPEND WSJCPP_LIBRARIES ${CURL_LIBRARIES})
-ELSE(CURL_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find the CURL library and development files.")
-ENDIF(CURL_FOUND)
 
 # libhv
 set(WITH_OPENSSL OFF CACHE BOOL "")

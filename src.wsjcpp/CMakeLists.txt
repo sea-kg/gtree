@@ -22,4 +22,14 @@ list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_core/"
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_core/wsjcpp_core.cpp")
 list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_core/wsjcpp_core.h")
 
+# wsjcpp-employees:v0.1.2
+list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_employees/")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.h")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_employees/wsjcpp_employees.cpp")
+
+# wsjcpp-yaml:v0.1.1
+list (APPEND WSJCPP_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_yaml/")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.cpp")
+list (APPEND WSJCPP_SOURCES "${CMAKE_SOURCE_DIR}/./src.wsjcpp/wsjcpp_yaml/wsjcpp_yaml.h")
+
 
